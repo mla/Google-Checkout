@@ -20,6 +20,14 @@ Version 1.0
   my $gco = Google::Checkout::General::GCO->new(
             config_path => 'conf/GCOSystemGlobal.conf');
 
+  #--
+  #-- Or you can pass in the merchant id, key and Checkout URL like this
+  #--
+  $gco = Google::Checkout::General::GCO->new(
+         merchant_id  => 1234,
+         merchant_key => 'abcd',
+         gco_server   => 'https://sandbox.google.com/...');
+
   my $cart = Google::Checkout::General::ShoppingCart->new(
              expiration    => "+1 month",
              private       => "Merchant private data",
@@ -68,9 +76,10 @@ various commands and process notifications.
 
 =over 4
 
-=item new CONFIG_PATH => ...
+=item new CONFIG_PATH => ..., MERCHANT_ID => ..., MERCHANT_KEY => ..., GCO_SERVER => ...
 
-Constructor. Loads the configuration file from CONFIG_PATH.
+Constructor. Loads the configuration file from CONFIG_PATH. If no configuration
+file is specified, merchant id, key and Checkout server URL must be specified.
 
 =item reader
 
@@ -199,21 +208,49 @@ use Google::Checkout::General::Util qw/is_gco_error compute_hmac_sha1 compute_ba
 #--       the user can say "use GCO 2.0;' which will reject this
 #--       version of the library. 
 #--
-our $VERSION = "1.0";
+our $VERSION = "1.0.1";
 
 sub new 
 {
   my ($class, %args) = @_;
 
-  my $config_reader = undef;
+  my $self = {_reader => undef};
+
   if ($args{config_path}) {
-    $config_reader = Google::Checkout::General::ConfigReader->new(
+
+    #--
+    #-- have a configuration? if so, use it
+    #--
+    $self->{_reader} = Google::Checkout::General::ConfigReader->new(
                        {config_path => $args{config_path}});
+
+  } elsif ($args{merchant_id} && $args{merchant_key} && $args{gco_server}) {
+
+    #--
+    #-- config is passed in
+    #--
+    $self->{__merchant_id}     = $args{merchant_id};
+    $self->{__merchant_key}    = $args{merchant_key};
+    $self->{__base_gco_server} = $args{gco_server};
+
+    #--
+    #-- if user supply the following, use them. otherwise, use default
+    #--
+    $self->{__xml_schema}         = $args{xml_schema} || 'http://checkout.google.com/schema/2';
+    $self->{__currency_supported} = $args{currency_supported} || 'USD';
+    $self->{__xml_version}        = $args{xml_version} || '1.0';
+    $self->{__xml_encoding}       = $args{xml_encoding} || 'UTF-8';
+
   } else {
-    $config_reader = Google::Checkout::General::ConfigReader->new;
+
+    #--
+    #-- try a default configuration
+    #--
+
+    $self->{_reader} = Google::Checkout::General::ConfigReader->new;
   }
 
-  return bless {_reader => $config_reader} => $class;
+  return bless $self => $class;
 }
 
 sub reader 
@@ -257,9 +294,14 @@ sub get_request_diagnose_url
 sub b64_signature
 {
   my ($self, $cart) = @_; #-- $cart = Shopping cart in XML
-  
-  my $id = $self->reader()->get(Google::Checkout::XML::Constants::MERCHANT_KEY);
-
+ 
+  my $id = '';
+  if ($self->reader()) {
+    $id = $self->reader()->get(Google::Checkout::XML::Constants::MERCHANT_KEY);
+  } else {
+    $id = $self->{__merchant_key} || Google::Checkout::General::Error(-1, "Missing merchant key");
+  }
+ 
   return is_gco_error($id) ? $id : compute_hmac_sha1($id, $cart, 1);
 }
 
@@ -284,9 +326,16 @@ sub get_xml_and_signature
 
   my $signature = $self->b64_signature($xml);
 
+  my $merchant_key = '';
+  if ($self->reader()) {
+    $merchant_key = $self->reader()->get(Google::Checkout::XML::Constants::MERCHANT_KEY);
+  } else {
+    $merchant_key = $self->{__merchant_key};
+  }
+
   return {xml => compute_base64($xml), signature => $signature,
           raw_xml => $xml, 
-          raw_key => $self->reader()->get(Google::Checkout::XML::Constants::MERCHANT_KEY)};
+          raw_key => $merchant_key};
 }
 
 #--
@@ -388,8 +437,16 @@ sub send
 {
   my ($self, %args) = @_;
 
-  my $id  = $self->reader()->get(Google::Checkout::XML::Constants::MERCHANT_ID);
-  my $key = $self->reader()->get(Google::Checkout::XML::Constants::MERCHANT_KEY);
+  my $id = '';
+  my $key = '';
+
+  if ($self->reader()) {
+    $id  = $self->reader()->get(Google::Checkout::XML::Constants::MERCHANT_ID);
+    $key = $self->reader()->get(Google::Checkout::XML::Constants::MERCHANT_KEY);
+  } else {
+    $id = $self->{__merchant_id} || Google::Checkout::General::Error(-1, "Missing merchant ID");
+    $key = $self->{__merchant_key} || Google::Checkout::General::Error(-1, "Missing merchant key");
+  }
 
   return $id  if is_gco_error($id);
   return $key if is_gco_error($key);
@@ -450,15 +507,25 @@ sub _get_url
 {
   my ($self, $type, $diagnose) = @_;
 
-  my $url = $self->{_reader}->get(Google::Checkout::XML::Constants::BASE_GCO_SERVER);
-  my $mid = $self->{_reader}->get(Google::Checkout::XML::Constants::MERCHANT_ID);
+  my $url = Google::Checkout::General::Error->new(-1, 'Missing URL');
+  my $mid = Google::Checkout::General::Error->new(-1, 'Missing merchant ID');
+
+  if ($self->reader()) {
+    $url = $self->reader()->get(Google::Checkout::XML::Constants::BASE_GCO_SERVER);
+    $mid = $self->reader()->get(Google::Checkout::XML::Constants::MERCHANT_ID);
+  } else {
+    $url = $self->{__base_gco_server} || Google::Checkout::General::Error->new(-1, 'Missing URL');
+    $mid = $self->{__merchant_id} || Google::Checkout::General::Error->new(-1, 'Missing merchant ID');
+  }
 
   return $url if is_gco_error($url);
   return $mid if is_gco_error($mid);
 
-  $url =~ s#/+$##;
+  if ($self->reader()) {
+    $url =~ s#/+$##;
+    $url .= '/' . $mid . '/' . $type;
+  }
 
-  $url .= '/' . $mid . '/' . $type;
   $url .= '/diagnose' if $diagnose;
 
   return $url;

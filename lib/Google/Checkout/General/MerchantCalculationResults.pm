@@ -72,8 +72,15 @@ sub new
 
   my $schema = Google::Checkout::XML::Constants::XML_SCHEMA;
 
+  my $xml_schema = '';
+  if ($args{gco}->reader()) {
+    $xml_schema = $args{gco}->reader()->get($schema);
+  } else {
+    $xml_schema = $args{gco}->{__xml_schema};
+  }
+
   $self->add_element(name => Google::Checkout::XML::Constants::MERCHANT_CALCULATION_RESULTS,
-                     attr => [xmlns => $args{gco}->reader()->get($schema)]);
+                     attr => [xmlns => $xml_schema]);
   $self->add_element(name => Google::Checkout::XML::Constants::RESULTS);
 
   #--
@@ -104,10 +111,17 @@ sub done
 {
   my ($self) = @_;
 
+  my $currency = Google::Checkout::XML::Constants::CURRENCY_SUPPORTED;
+
+  my $currency_supported = '';
+  if ($self->{gco}->reader()) {
+    $currency_supported = $self->{gco}->reader->get($currency);
+  } else {
+    $currency_supported = $self->{gco}->{__currency_supported};
+  }
+
   for my $result (@{$self->get_merchant_calculation_result})
   {
-    my $currency = Google::Checkout::XML::Constants::CURRENCY_SUPPORTED;
-
     $self->add_element(
       name => Google::Checkout::XML::Constants::RESULT,
       attr => [Google::Checkout::XML::Constants::SHIPPING_NAME => $result->get_shipping_name,
@@ -118,7 +132,7 @@ sub done
       $self->add_element(
          name => Google::Checkout::XML::Constants::TOTAL_TAX,
          attr => [Google::Checkout::XML::Constants::ITEM_CURRENCY =>
-                  $self->{gco}->reader->get($currency)],
+                  $currency_supported],
          data => $result->get_total_tax, close => 1);
     }
 
@@ -127,7 +141,7 @@ sub done
       $self->add_element(
          name => Google::Checkout::XML::Constants::SHIPPING_RATE,
          attr => [Google::Checkout::XML::Constants::ITEM_CURRENCY => 
-                  $self->{gco}->reader->get($currency)],
+                  $currency_supported],
          data => format_tax_rate($result->get_shipping_rate), close => 1);
     }
 
@@ -176,20 +190,22 @@ sub _handle_coupon_certificate
                                            $result->get_certificate_code, 
                      close => 1);
 
+  my $currency_supported = $self->{gco}->reader() ?
+                           $self->{gco}->reader()->get(Google::Checkout::XML::Constants::CURRENCY_SUPPORTED) :
+                           $self->{gco}->{__currency_supported};
+
   if ($for_coupon && $result->has_coupon_calculated_amount)
   {
     $self->add_element(
       name => Google::Checkout::XML::Constants::GIFT_CERTIFICATE_CALCULATED_AMOUNT,
-      attr => [Google::Checkout::XML::Constants::ITEM_CURRENCY =>
-               $self->{gco}->reader->get(Google::Checkout::XML::Constants::CURRENCY_SUPPORTED)],
+      attr => [Google::Checkout::XML::Constants::ITEM_CURRENCY => $currency_supported],
       data => $result->get_coupon_amount, close => 1);
   }
   elsif ($result->has_certificate_calculated_amount)
   {
     $self->add_element(
       name => Google::Checkout::XML::Constants::GIFT_CERTIFICATE_CALCULATED_AMOUNT,
-      attr => [Google::Checkout::XML::Constants::ITEM_CURRENCY =>
-               $self->{gco}->reader->get(Google::Checkout::XML::Constants::CURRENCY_SUPPORTED)],
+      attr => [Google::Checkout::XML::Constants::ITEM_CURRENCY => $currency_supported],
       data => $result->get_certificate_amount, close => 1);
   }
 

@@ -19,9 +19,12 @@ sub new
 
   my $self = $class->SUPER::new(%args);
 
+  my $xml_schema = $args{gco}->reader() ?
+                   $args{gco}->reader()->get(Google::Checkout::XML::Constants::XML_SCHEMA) :
+                   $args{gco}->{__xml_schema};
+
   $self->add_element(name => Google::Checkout::XML::Constants::NOTIFICATION_ACKNOWLEDGMENT,
-                     attr => [xmlns => $args{gco}->reader()->get(
-                              Google::Checkout::XML::Constants::XML_SCHEMA)]);
+                     attr => [xmlns => $xml_schema]);
 
   return bless $self => $class;
 }

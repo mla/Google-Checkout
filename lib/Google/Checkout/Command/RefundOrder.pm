@@ -162,11 +162,18 @@ sub to_xml
   {
     my $sstring = Google::Checkout::XML::Constants::CURRENCY_SUPPORTED;
 
+    my $currency_supported = '';
+    if ($args{gco}->reader()) {
+      $currency_supported = $args{gco}->reader()->get($sstring);
+    } else {
+      $currency_supported = $args{gco}->{__currency_supported};
+    }
+
     $self->add_element(close => 1,
                        name => Google::Checkout::XML::Constants::AMOUNT, 
                        data => $self->get_amount,
                        attr => [Google::Checkout::XML::Constants::ITEM_CURRENCY => 
-                                $args{gco}->reader()->get($sstring)]);
+                                $currency_supported]);
   }
   if ($self->get_comment)
   {

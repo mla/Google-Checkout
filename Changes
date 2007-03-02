@@ -1,5 +1,10 @@
-Revision history for GCO
+Revision history for Google Checkout
 
 1.0     2007-02-07
         First version, released on an unsuspecting world.
 
+1.0.1   2007-03-01
+        Allow user to pass in merchant ID, key and Checkout URL when
+        constructing a Google::Checkout::General::GCO object. With this
+        change, it's no longer necessary to maintain an external configuration
+        file.

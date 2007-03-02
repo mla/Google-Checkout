@@ -111,9 +111,16 @@ sub to_xml
 
   my $sstring = Google::Checkout::XML::Constants::XML_SCHEMA;
 
+  my $xml_schema = '';
+  if ($args{gco}->reader()) {
+    $xml_schema = $args{gco}->reader()->get($sstring);
+  } else {
+    $xml_schema = $args{gco}->{__xml_schema};
+  }
+
   $self->add_element(
            name => $self->get_name,
-           attr => [xmlns => $args{gco}->reader()->get($sstring),
+           attr => [xmlns => $xml_schema,
                     Google::Checkout::XML::Constants::ORDER_NUMBER => $self->get_order_number]);
 }
 

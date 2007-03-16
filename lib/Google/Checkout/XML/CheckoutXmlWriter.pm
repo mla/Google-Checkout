@@ -425,20 +425,11 @@ sub _get_alternate_default
 {
   my ($self, $tables) = @_;
 
-  return ([],[]) unless $tables && @$tables;
+  my @dst_tables = ([], []);
 
-  my @dst_tables;
-
-  for my $table (@$tables)
+  for my $table ($tables ? @$tables : ())
   {
-    if ($table->is_default)
-    {
-      push(@{$dst_tables[0]}, $table);
-    }
-    else
-    {
-      push(@{$dst_tables[1]}, $table);
-    }
+    push(@{$dst_tables[$table->is_default ? 0 : 1]}, $table);
   }
 
   return @dst_tables;

@@ -21,6 +21,9 @@ the configuration file:
 Change MERCHANT_ID and MERCHANT_KEY to those provided to you by Google. Finally,
 change BASE_GCO_SERVER to either the sandbox or live Checkout server.
 
+Note that if you have v1.0.1 or later, changing the configuration is optional. The
+code supports passing in the parameters so no configuration file is required. 
+
 Optionally, after you have make the configuration change you should test it:
 
     cd examples
@@ -42,16 +45,16 @@ After installing, you can find documentation for this module with the perldoc co
 You can also look for information at:
 
     Search CPAN
-        http://search.cpan.org/dist/GoogleCheckout
+        http://search.cpan.org/dist/Google::Checkout
 
     CPAN Request Tracker:
-        http://rt.cpan.org/NoAuth/Bugs.html?Dist=GoogleCheckout
+        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Google::Checkout
 
     AnnoCPAN, annotated CPAN documentation:
-        http://annocpan.org/dist/GoogleCheckout
+        http://annocpan.org/dist/google-checkout
 
-    CPAN Ratings:
-        http://cpanratings.perl.org/d/GoogleCheckout
+    CPAN rating:
+	http://cpanratings.perl.org/rate/?distribution=Google-Checkout
 
 COPYRIGHT AND LICENCE
 

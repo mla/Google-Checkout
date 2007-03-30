@@ -216,4 +216,9 @@ use constant ORDER_STATE_CHANGE_NOTIFICATION => "order-state-change-notification
 use constant REFUND_AMOUNT_NOTIFICATION      => "refund-amount-notification";
 use constant RISK_INFORMATION_NOTIFICATION   => "risk-information-notification";
 
+#--
+#-- To support Google Analytics
+#--
+use constant ANALYTICS_DATA => "analytics-data";
+
 1;

@@ -450,6 +450,8 @@ sub get_items
                                {Google::Checkout::XML::Constants::ITEMS}->
                                {Google::Checkout::XML::Constants::ITEM};
 
+  $items = [$items] if (ref $items eq 'HASH');
+
   my @item_objects;
   for my $item (@$items)
   {

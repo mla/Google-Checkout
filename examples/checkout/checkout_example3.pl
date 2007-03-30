@@ -149,7 +149,8 @@ my $checkout_flow = Google::Checkout::General::MerchantCheckoutFlow->new(
                     continue_shopping_url => "http://continue/shopping/url",
                     buyer_phone           => "1-111-111-1111",
                     tax_table             => [$tax_table1,$tax_table2],
-                    merchant_calculation  => $merchant_calculation);
+                    merchant_calculation  => $merchant_calculation,
+		    analytics_data        => "SW5zZXJ0IDxhbmFseXRpY3MtZGF0YT4gdmFsdWUgaGVyZS4=");
 
 #--
 #-- Once the merchant checkout flow is created, we can create the shopping
@@ -196,7 +197,7 @@ my $data = $gco->get_xml_and_signature($cart);
 #--
 #-- Print the XML and signature
 #--
-print "URL:       ",$gco->get_request_url,"\n",
+print "URL:       ",$gco->get_checkout_url,"\n",
       "Raw XML:   $data->{raw_xml}\n",
       "Key:       $data->{raw_key}\n",
       "Signature: $data->{signature}\n",

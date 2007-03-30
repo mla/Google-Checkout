@@ -150,6 +150,12 @@ sub new
                          data => "true", close => 1);
     }
 
+    my $analytics_data = $checkout_flow->get_analytics_data;
+    if ($analytics_data) {
+      $self->add_element(name => Google::Checkout::XML::Constants::ANALYTICS_DATA,
+                         data => $analytics_data, close => 1);
+    }
+
     #--
     #-- Add tax tables
     #--

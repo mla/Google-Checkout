@@ -17,7 +17,8 @@ Google::Checkout::General::MerchantCheckoutFlow
                       continue_shopping_url => "http://continue/shopping/url",
                       buyer_phone           => "1-111-111-1111",
                       tax_table             => [$table1, $table2],
-                      merchant_calculation  => $merchant_calculation);
+                      merchant_calculation  => $merchant_calculation,
+		      analytics_data        => "SW5zZXJ0IDxhbmFseXRpY3MtZGF0YT4gdmFsdWUgaGVyZS4=");
 
   my $cart = Google::Checkout::General::ShoppingCart->new(
              expiration    => "+1 month",
@@ -155,6 +156,9 @@ sub new
   $self->{merchant_calculation} = $args{merchant_calculation} 
     if $args{merchant_calculation};
 
+  $self->{analytics_data} = $args{analytics_data}
+    if $args{analytics_data};
+
   return bless $self => $class;
 }
 
@@ -244,6 +248,20 @@ sub set_merchant_calculation
 
   $self->{merchant_calculation} = $merchant_calculation 
     if $merchant_calculation;
+}
+
+sub get_analytics_data 
+{
+  my ($self) = @_;
+
+  return $self->{analytics_data};
+}
+
+sub set_analytics_data
+{
+  my ($self, $analytics_data) = @_;
+
+  $self->{analytics_data} = $analytics_data if $analytics_data;
 }
 
 1;

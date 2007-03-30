@@ -6,7 +6,7 @@ Google::Checkout::General::GCO
 
 =head1 VERSION
 
-Version 1.0.2
+Version 1.0.3
 
 =cut 
 
@@ -208,7 +208,7 @@ use Google::Checkout::General::Util qw/is_gco_error compute_hmac_sha1 compute_ba
 #--       the user can say "use GCO 2.0;' which will reject this
 #--       version of the library. 
 #--
-our $VERSION = "1.0.2";
+our $VERSION = "1.0.3";
 
 sub new 
 {
@@ -264,6 +264,11 @@ sub get_checkout_url
 { 
   my ($self) = @_;
 
+  return $self->_get_url('merchantCheckout');
+
+  #--
+  #-- TODO: the following will go away on July 2007
+  #--
   return $self->_get_url("checkout");    
 }
 
@@ -271,6 +276,11 @@ sub get_checkout_diagnose_url
 { 
   my ($self) = @_;
 
+  return $self->_get_url('merchantCheckout');
+
+  #--
+  #-- TODO: the following will go away on July 2007
+  #--
   return $self->_get_url("checkout", 1); 
 }
 
@@ -359,8 +369,8 @@ sub raw_checkout
 {
   my ($self, $xml, $diagnose) = @_;
 
-  my $url = $diagnose ? $self->get_request_diagnose_url :
-                        $self->get_request_url();
+  my $url = $diagnose ? $self->get_checkout_diagnose_url :
+                        $self->get_checkout_url();
 
   my $response = $self->send(url  => $url,
                              cart => $xml);

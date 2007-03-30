@@ -8,3 +8,7 @@ Revision history for Google Checkout
         constructing a Google::Checkout::General::GCO object. With this
         change, it's no longer necessary to maintain an external configuration
         file.
+1.0.3   2007-03-23
+        * Support posting to "/merchantCheckout"
+	* get_items() of Notification/NewOrder.pm dies if given a single item
+	* Support Google Analytics (http://code.google.com/apis/checkout/developer/checkout_analytics_integration.html)

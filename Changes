@@ -12,3 +12,7 @@ Revision history for Google Checkout
         * Support posting to "/merchantCheckout"
 	* get_items() of Notification/NewOrder.pm dies if given a single item
 	* Support Google Analytics (http://code.google.com/apis/checkout/developer/checkout_analytics_integration.html)
+
+1.0.4   2007-04-27
+	* Code now works with 5.6.x
+	* New order notification is broken if shipping or buyer info is missing

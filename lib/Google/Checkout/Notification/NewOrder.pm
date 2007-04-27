@@ -260,7 +260,13 @@ sub get_buyer_info
            $Google::Checkout::General::Error::ERRORS{INVALID_VALUE}->[1] . ": $info") 
     unless is_valid_buyer_info $info;
 
-  return $self->get_data->{$shipping_billing}->{$info};
+  my $ret = $self->get_data->{$shipping_billing}->{$info};
+
+  if (ref($ret) eq 'HASH') {
+    return '';
+  } else {
+    return $ret;
+  }
 }
 
 sub merchant_calculation_successful

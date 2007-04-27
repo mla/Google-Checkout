@@ -38,7 +38,7 @@ sub new
 
   $self->add_element(name => $args{command}->get_name,
                      attr => [xmlns => $xml_schema,
-                              Google::Checkout::XML::Constants::ORDER_NUMBER => 
+                              Google::Checkout::XML::Constants::ORDER_NUMBER,
                                 $args{command}->get_order_number]);
 
   if ($args{command}->get_amount)
@@ -46,7 +46,7 @@ sub new
     $self->add_element(close => 1,
                        name => Google::Checkout::XML::Constants::AMOUNT, 
                        data => $args{command}->get_amount,
-                       attr => [Google::Checkout::XML::Constants::ITEM_CURRENCY => 
+                       attr => [Google::Checkout::XML::Constants::ITEM_CURRENCY,
                                 $currency_supported]);
   }
 

@@ -87,7 +87,7 @@ sub new
                            data => $_->get_description(), close => 1);
         $self->add_element(name => Google::Checkout::XML::Constants::ITEM_PRICE,
                            data => $_->get_price(), close => 1,
-                           attr => [Google::Checkout::XML::Constants::ITEM_CURRENCY => 
+                           attr => [Google::Checkout::XML::Constants::ITEM_CURRENCY,
                                     $currency_supported]);
         $self->add_element(name => Google::Checkout::XML::Constants::QUANTITY,
                            data =>$_->get_quantity(), close => 1);
@@ -187,7 +187,7 @@ sub new
                                   $shipping->get_shipping_name()]);
       $self->add_element(name => Google::Checkout::XML::Constants::PRICE,
                          data => $price, close => 1,
-                         attr => [Google::Checkout::XML::Constants::ITEM_CURRENCY =>
+                         attr => [Google::Checkout::XML::Constants::ITEM_CURRENCY,
                                   $currency_supported]);
 
       my $restriction = $shipping->get_restriction();
@@ -307,7 +307,7 @@ sub _add_tax_tables
   return unless $tables;
 
   $self->add_element(name => Google::Checkout::XML::Constants::TAX_TABLES, 
-                     attr => [Google::Checkout::XML::Constants::MERCHANT_CALCULATED => 
+                     attr => [Google::Checkout::XML::Constants::MERCHANT_CALCULATED,
                               $mcf->get_merchant_calculation ? 'true' : 'false']) 
     if @$tables;
 
@@ -340,8 +340,8 @@ sub _add_tax_tables
     for my $atable (@$alternate_tables)
     {
       $self->add_element(name => Google::Checkout::XML::Constants::ALTERNATE_TAX_TABLE,
-                         attr => [Google::Checkout::XML::Constants::STANDALONE => $atable->get_standalone,
-                                  Google::Checkout::XML::Constants::NAME       => $atable->get_name]);
+                         attr => [Google::Checkout::XML::Constants::STANDALONE, $atable->get_standalone,
+                                  Google::Checkout::XML::Constants::NAME      , $atable->get_name]);
 
       $self->add_element(name => Google::Checkout::XML::Constants::ALTERNATE_TAX_RULES);
 

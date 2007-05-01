@@ -107,18 +107,18 @@ use Google::Checkout::XML::Constants;
 #--
 #-- A small hash to hold all possible valid buyer info
 #--
-my %valid_buyer_info = ( Google::Checkout::XML::Constants::BUYER_CONTACT_NAME => 1, 
-                         Google::Checkout::XML::Constants::BUYER_COMPANY_NAME => 1,
-                         Google::Checkout::XML::Constants::BUYER_EMAIL        => 1, 
-                         Google::Checkout::XML::Constants::BUYER_PHONE        => 1,
-                         Google::Checkout::XML::Constants::BUYER_FAX          => 1, 
-                         Google::Checkout::XML::Constants::BUYER_ADDRESS1     => 1,
-                         Google::Checkout::XML::Constants::BUYER_ADDRESS2     => 1, 
-                         Google::Checkout::XML::Constants::BUYER_CITY         => 1,
-                         Google::Checkout::XML::Constants::BUYER_CITY         => 1, 
-                         Google::Checkout::XML::Constants::BUYER_REGION       => 1,
-                         Google::Checkout::XML::Constants::BUYER_POSTAL_CODE  => 1, 
-                         Google::Checkout::XML::Constants::BUYER_COUNTRY_CODE => 1);
+my %valid_buyer_info = ( Google::Checkout::XML::Constants::BUYER_CONTACT_NAME , 1, 
+                         Google::Checkout::XML::Constants::BUYER_COMPANY_NAME , 1,
+                         Google::Checkout::XML::Constants::BUYER_EMAIL        , 1, 
+                         Google::Checkout::XML::Constants::BUYER_PHONE        , 1,
+                         Google::Checkout::XML::Constants::BUYER_FAX          , 1, 
+                         Google::Checkout::XML::Constants::BUYER_ADDRESS1     , 1,
+                         Google::Checkout::XML::Constants::BUYER_ADDRESS2     , 1, 
+                         Google::Checkout::XML::Constants::BUYER_CITY         , 1,
+                         Google::Checkout::XML::Constants::BUYER_CITY         , 1, 
+                         Google::Checkout::XML::Constants::BUYER_REGION       , 1,
+                         Google::Checkout::XML::Constants::BUYER_POSTAL_CODE  , 1, 
+                         Google::Checkout::XML::Constants::BUYER_COUNTRY_CODE , 1);
 
 sub is_gco_error       
 { 

@@ -16,3 +16,6 @@ Revision history for Google Checkout
 1.0.4   2007-04-27
 	* Code now works with 5.6.x
 	* New order notification is broken if shipping or buyer info is missing
+
+1.0.5   2007-05-01
+        * Code still doesn't work with 5.6.x. Fixed a few more of those

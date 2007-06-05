@@ -156,6 +156,27 @@ sub new
                          data => $analytics_data, close => 1);
     }
 
+    my $parameterized_url = $checkout_flow->get_parameterized_url;
+    if ($parameterized_url && $parameterized_url->get_url) {
+      $self->add_element(name => Google::Checkout::XML::Constants::PARAMETERIZED_URLS);
+      $self->add_element(name => Google::Checkout::XML::Constants::PARAMETERIZED_URL,
+                         attr => [Google::Checkout::XML::Constants::URL, 
+                                  $parameterized_url->get_url]);
+      my $additional_params = $parameterized_url->get_url_params;
+      if ($additional_params && %{$additional_params}) {
+        $self->add_element(name => Google::Checkout::XML::Constants::PARAMETERS);
+        while (my ($name, $value) = each %{$additional_params}) {
+          $self->add_element(name => Google::Checkout::XML::Constants::URL_PARAMETER,
+                             attr => [Google::Checkout::XML::Constants::NAME, $name,
+                                      Google::Checkout::XML::Constants::TYPE, $value],
+                             close => 1);
+        }
+        $self->close_element();
+      }
+      $self->close_element();
+      $self->close_element();
+    }
+
     #--
     #-- Add tax tables
     #--

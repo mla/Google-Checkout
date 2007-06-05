@@ -102,6 +102,22 @@ Returns the C<Google::Checkout::General::MerchantCalculations> object.
 
 Sets the C<Google::Checkout::General::MerchantCalculations> object to MERCHANT_CALCULATION.
 
+=item get_analytics_data
+
+Returns the analytics data.
+
+=item set_analytics_data
+
+Sets the analytics data.
+
+=item get_parameterized_url
+
+Returns the C<Google::Checkout::General::ParameterizedUrls> object.
+
+=item set_parameterzied_url
+
+Sets the C<Google::Checkout::General::ParameterizedUrls> object.
+
 =back
 
 =cut
@@ -158,6 +174,9 @@ sub new
 
   $self->{analytics_data} = $args{analytics_data}
     if $args{analytics_data};
+
+  $self->{parameterized_url} = $args{parameterized_url}
+    if $args{parameterized_url};
 
   return bless $self => $class;
 }
@@ -262,6 +281,20 @@ sub set_analytics_data
   my ($self, $analytics_data) = @_;
 
   $self->{analytics_data} = $analytics_data if $analytics_data;
+}
+
+sub get_parameterized_url 
+{
+  my ($self) = @_;
+  
+  return $self->{parameterized_url};
+}
+
+sub set_parameterized_url 
+{
+  my ($self, $purl) = @_;
+
+  $self->{parameterized_url} = $purl if $purl;
 }
 
 1;

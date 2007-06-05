@@ -221,4 +221,14 @@ use constant RISK_INFORMATION_NOTIFICATION   => "risk-information-notification";
 #--
 use constant ANALYTICS_DATA => "analytics-data";
 
+#--
+#-- To support parameterized URL
+#--
+use constant PARAMETERIZED_URLS => "parameterized-urls";
+use constant PARAMETERIZED_URL  => "parameterized-url";
+use constant URL                => "url";
+use constant PARAMETERS         => "parameters";
+use constant URL_PARAMETER      => "url-parameter";
+use constant TYPE               => "type";
+
 1;

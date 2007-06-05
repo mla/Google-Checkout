@@ -33,6 +33,7 @@ lib/Google/Checkout/General/TaxRule.pm
 lib/Google/Checkout/General/TaxTable.pm
 lib/Google/Checkout/General/TaxTableAreas.pm
 lib/Google/Checkout/General/Util.pm
+lib/Google/Checkout/General/ParameterizedUrls.pm
 lib/Google/Checkout/Notification/ChargeAmount.pm
 lib/Google/Checkout/Notification/ChargebackAmount.pm
 lib/Google/Checkout/Notification/NewOrder.pm
@@ -49,6 +50,7 @@ lib/Google/Checkout/XML/Writer.pm
 examples/checkout/checkout_example1.pl
 examples/checkout/checkout_example2.pl
 examples/checkout/checkout_example3.pl
+examples/checkout/checkout_example4.pl
 examples/command/add_merchant_order_number_command_example.pl
 examples/command/add_tracking_data_command_example.pl
 examples/command/archive_order_command_example.pl

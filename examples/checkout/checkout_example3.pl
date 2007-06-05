@@ -31,17 +31,10 @@ my $gco = Google::Checkout::General::GCO->new(config_path => $config);
 
 #--
 #-- Create some shipping restrictions. The followings says we 
-#-- can ship to CA (the state) as well as area with zip code
-#-- begins with 94. We will not ship to NY (the state) or
-#-- any area begins with teh zip code 90. Also, for demo purpose ONLY,
-#-- we are also specifying that we will NOT ship to any of the 50 US states.
+#-- can ship to CA (the state).
 #--
 my $restriction = Google::Checkout::General::ShippingRestrictions->new(
-                  allowed_state         => ["CA"],
-                  allowed_zip           => ["94*"],
-                  excluded_state        => ["NY"],
-                  excluded_zip          => ["90*"],
-                  excluded_country_area => [Google::Checkout::XML::Constants::FULL_50_STATES]);
+                  allowed_state => ["CA"]);
 
 #--
 #-- Create a custom shipping method with the above 
@@ -66,19 +59,12 @@ my $flat_rate_shipping = Google::Checkout::General::FlatRateShipping->new(
 
 #--
 #-- Now are are creating a tax rule. We set shipping 
-#-- tax to 1 to tell Checkout that the shippings are taxable 
-#-- and the rate is 2.5%. This tax rule applies to
-#-- CA (the state), any zip code starting with 94 as 
-#-- well as the full 50 US states. Notice again that 
-#-- this example is for demo purpose only because the full 
-#-- 50 US states already cover CA and any zip code starting 
-#-- with 94
+#-- tax to the full 50 US states.
 #--
 my $tax_rule1 = Google::Checkout::General::TaxRule->new(
                 shipping_tax => 1,
                 rate => 0.025,
                 area => Google::Checkout::General::TaxTableAreas->new(
-                        state => ['CA'], zip => ['94*'],
                         country => [Google::Checkout::XML::Constants::FULL_50_STATES]));
 
 #--
@@ -87,8 +73,7 @@ my $tax_rule1 = Google::Checkout::General::TaxRule->new(
 my $tax_rule2 = Google::Checkout::General::TaxRule->new(
                 shipping_tax => 0,
                 rate => 8.87,
-                area => [Google::Checkout::General::TaxTableAreas->new(state => ['NY']),
-                         Google::Checkout::General::TaxTableAreas->new(state => ['PI'])]);
+                area => [Google::Checkout::General::TaxTableAreas->new(state => ['NY'])]);
 
 #--
 #-- Create yet another tax rule similar to the first one

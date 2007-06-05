@@ -19,3 +19,6 @@ Revision history for Google Checkout
 
 1.0.5   2007-05-01
         * Code still doesn't work with 5.6.x. Fixed a few more of those
+
+1.0.6   2007-06-04
+        * Add support for parameterized URL tracking

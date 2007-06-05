@@ -172,7 +172,7 @@ sub to_xml
     $self->add_element(close => 1,
                        name => Google::Checkout::XML::Constants::AMOUNT, 
                        data => $self->get_amount,
-                       attr => [Google::Checkout::XML::Constants::ITEM_CURRENCY => 
+                       attr => [Google::Checkout::XML::Constants::ITEM_CURRENCY,
                                 $currency_supported]);
   }
   if ($self->get_comment)

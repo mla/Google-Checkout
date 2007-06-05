@@ -14,15 +14,16 @@ use Google::Checkout::General::TaxRule;
 use Google::Checkout::General::TaxTable;
 use Google::Checkout::General::TaxTableAreas;
 use Google::Checkout::General::MerchantCalculations;
+use Google::Checkout::General::ParameterizedUrls;
 
 use Google::Checkout::XML::Constants;
 use Google::Checkout::General::Util qw/is_gco_error/;
 
 #--
-#-- The following example shows how to perform a CBG checkout 
-#-- using various objects. The purpose of the code below is
-#-- to demostrate the usage of all the objects but logic wise,
-#-- it's probably not something a typical merchant will do
+#-- This example is the same as example 2 except it doesn't actuall
+#-- perform a checkout. Instead, it prints out the XML, signature, 
+#-- etc. This gives the user a chance to manually inspect the XML
+#-- generated. Great for debug! 
 #--
 
 my $config = $ARGV[0] || "../conf/GCOSystemGlobal.conf";
@@ -119,6 +120,19 @@ my $merchant_calculation = Google::Checkout::General::MerchantCalculations->new(
                              certificates => 1);
 
 #--
+#-- Create a parameterized URL object so we can track the order
+#--
+my $purls = Google::Checkout::General::ParameterizedUrls->new(
+            url => 'http://www.yourcompany.com/tracking?parter=123&amp;partnerName=Company',
+            url_params => {orderID => 'order-id', totalCost => 'order-total'});
+
+#--
+#-- Add a couple more params
+#--
+$purls->set_url_param(taxes => 'tax-amount');
+$purls->set_url_param(shipping => 'shipping-amount');
+
+#--
 #-- Now it's time to create the checkout flow. 
 #-- This particular checkout flow only supports the flat rate 
 #-- shipping method (you can add more). Edit cart and continue 
@@ -134,7 +148,9 @@ my $checkout_flow = Google::Checkout::General::MerchantCheckoutFlow->new(
                     continue_shopping_url => "http://continue/shopping/url",
                     buyer_phone           => "1-111-111-1111",
                     tax_table             => [$tax_table1,$tax_table2],
-                    merchant_calculation  => $merchant_calculation);
+                    merchant_calculation  => $merchant_calculation,
+		    analytics_data        => "SW5zZXJ0IDxhbmFseXRpY3MtZGF0YT4gdmFsdWUgaGVyZS4=",
+                    parameterized_url     => $purls);
 
 #--
 #-- Once the merchant checkout flow is created, we can create the shopping
@@ -174,16 +190,15 @@ $cart->add_item(Google::Checkout::General::MerchantItem->new(
                 tax_table_selector => $tax_table2->get_name()));
 
 #--
-#-- Now checkout out...
+#-- Get the signature and XML cart
 #--
-my $response = $gco->checkout($cart);
+my $data = $gco->get_xml_and_signature($cart);
 
 #--
-#-- Check for error
+#-- Print the XML and signature
 #--
-die $response if is_gco_error($response);
-
-#--
-#-- No error, the redirect URL is returned to us
-#--
-print $response,"\n";
+print "URL:       ",$gco->get_checkout_url,"\n",
+      "Raw XML:   $data->{raw_xml}\n",
+      "Key:       $data->{raw_key}\n",
+      "Signature: $data->{signature}\n",
+      "XML cart:  $data->{xml}\n";

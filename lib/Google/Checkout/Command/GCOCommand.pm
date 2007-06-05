@@ -121,7 +121,7 @@ sub to_xml
   $self->add_element(
            name => $self->get_name,
            attr => [xmlns => $xml_schema,
-                    Google::Checkout::XML::Constants::ORDER_NUMBER => $self->get_order_number]);
+                    Google::Checkout::XML::Constants::ORDER_NUMBER, $self->get_order_number]);
 }
 
 1;

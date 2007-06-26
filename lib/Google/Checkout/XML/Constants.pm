@@ -101,6 +101,7 @@ use constant ADD_TRACKING_DATA         => "add-tracking-data";
 use constant ADD_MERCHANT_ORDER_NUMBER => "add-merchant-order-number";
 use constant SEND_BUYER_MESSAGE        => "send-buyer-message";
 use constant ARCHIVE_ORDER             => "archive-order";
+use constant AUTHORIZE_ORDER           => "authorize-order";
 use constant UNARCHIVE_ORDER           => "unarchive-order";
 use constant COMMENT                   => "comment";
 use constant REASON                    => "reason";
@@ -230,5 +231,7 @@ use constant URL                => "url";
 use constant PARAMETERS         => "parameters";
 use constant URL_PARAMETER      => "url-parameter";
 use constant TYPE               => "type";
+
+use constant PLATFORM_ID => "platform-id";
 
 1;

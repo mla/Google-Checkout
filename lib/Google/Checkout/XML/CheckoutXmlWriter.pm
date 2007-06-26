@@ -180,6 +180,11 @@ sub new
       $self->close_element();
     }
 
+    if (defined $checkout_flow->get_platform_id()) {
+      $self->add_element(name => Google::Checkout::XML::Constants::PLATFORM_ID, 
+                         data => $checkout_flow->get_platform_id(), close => 1);
+    }
+
     #--
     #-- Add tax tables
     #--

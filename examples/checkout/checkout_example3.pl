@@ -135,7 +135,8 @@ my $checkout_flow = Google::Checkout::General::MerchantCheckoutFlow->new(
                     buyer_phone           => "1-111-111-1111",
                     tax_table             => [$tax_table1,$tax_table2],
                     merchant_calculation  => $merchant_calculation,
-		    analytics_data        => "SW5zZXJ0IDxhbmFseXRpY3MtZGF0YT4gdmFsdWUgaGVyZS4=");
+		    analytics_data        => "SW5zZXJ0IDxhbmFseXRpY3MtZGF0YT4gdmFsdWUgaGVyZS4=",
+                    platform_id           => 123456789);
 
 #--
 #-- Once the merchant checkout flow is created, we can create the shopping

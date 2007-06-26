@@ -6,6 +6,7 @@ conf/GCOSystemGlobal.conf
 lib/Google/Checkout/Command/AddMerchantOrderNumber.pm 
 lib/Google/Checkout/Command/AddTrackingData.pm
 lib/Google/Checkout/Command/ArchiveOrder.pm
+lib/Google/Checkout/Command/AuthorizeOrder.pm
 lib/Google/Checkout/Command/CancelOrder.pm
 lib/Google/Checkout/Command/ChargeOrder.pm
 lib/Google/Checkout/Command/GCOCommand.pm
@@ -61,6 +62,7 @@ examples/command/process_order_command_example.pl
 examples/command/refund_order_command_example.pl
 examples/command/send_buyer_message_command_example.pl
 examples/command/unarchive_order_command_example.pl
+examples/command/authorize_order_command_example.pl
 examples/notification/charge_amount_notification_example.pl
 examples/notification/chargeback_amount_notification_example.pl
 examples/notification/merchant_calculation_callback_example.pl

@@ -8,6 +8,7 @@ Revision history for Google Checkout
         constructing a Google::Checkout::General::GCO object. With this
         change, it's no longer necessary to maintain an external configuration
         file.
+
 1.0.3   2007-03-23
         * Support posting to "/merchantCheckout"
 	* get_items() of Notification/NewOrder.pm dies if given a single item
@@ -23,7 +24,11 @@ Revision history for Google Checkout
 1.0.6   2007-06-04
         * Add support for parameterized URL tracking
 
-1.0.7   2007-06-05
+1.0.7   2007-06-25
         * Handles notification with multiple anonymous addresses
         * Writes merchant item IDs to XML
         * Coupon code now accepts both true and false values
+
+1.0.8   2007-06-26
+        * Support <authorize-order> command
+        * Support for <platform-id>

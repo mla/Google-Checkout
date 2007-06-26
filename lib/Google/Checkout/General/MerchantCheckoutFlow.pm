@@ -118,6 +118,14 @@ Returns the C<Google::Checkout::General::ParameterizedUrls> object.
 
 Sets the C<Google::Checkout::General::ParameterizedUrls> object.
 
+=item get_platform_id
+
+Returns the platform ID
+
+=item set_platform_id ID
+
+Sets the platform ID
+
 =back
 
 =cut
@@ -177,6 +185,9 @@ sub new
 
   $self->{parameterized_url} = $args{parameterized_url}
     if $args{parameterized_url};
+
+  $self->{platform_id} = $args{platform_id}
+    if defined $args{platform_id};
 
   return bless $self => $class;
 }
@@ -295,6 +306,20 @@ sub set_parameterized_url
   my ($self, $purl) = @_;
 
   $self->{parameterized_url} = $purl if $purl;
+}
+
+sub get_platform_id
+{
+  my ($self) = @_;
+
+  return $self->{platform_id};
+}
+
+sub set_platform_id
+{
+  my ($self, $platform_id) = @_;
+
+  $self->{platform_id} = $platform_id if defined $platform_id;
 }
 
 1;

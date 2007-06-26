@@ -142,7 +142,7 @@ sub done
          name => Google::Checkout::XML::Constants::SHIPPING_RATE,
          attr => [Google::Checkout::XML::Constants::ITEM_CURRENCY => 
                   $currency_supported],
-         data => format_tax_rate($result->get_shipping_rate), close => 1);
+         data => $result->get_shipping_rate, close => 1);
     }
 
     if ($result->has_shippable)

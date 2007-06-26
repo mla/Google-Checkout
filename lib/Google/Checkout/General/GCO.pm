@@ -6,7 +6,7 @@ Google::Checkout::General::GCO
 
 =head1 VERSION
 
-Version 1.0.6
+Version 1.0.7
 
 =cut 
 
@@ -208,7 +208,7 @@ use Google::Checkout::General::Util qw/is_gco_error compute_hmac_sha1 compute_ba
 #--       the user can say "use GCO 2.0;' which will reject this
 #--       version of the library. 
 #--
-our $VERSION = "1.0.6";
+our $VERSION = "1.0.7";
 
 sub new 
 {

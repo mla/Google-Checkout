@@ -68,7 +68,7 @@ sub new
               total_tax           => $args{total_tax}                     || 0,
               shipping_rate       => $args{shipping_rate}                 || 0,,
               shippable           => $args{shippable}                     || '',
-              coupon_valid        => $args{valid_coupon}                  || 1,
+              coupon_valid        => defined($args{valid_coupon}) ? $args{valid_coupon} : 0,
               coupon_amount       => $args{coupon_calculated_amount}      || 0,
               coupon_code         => $args{coupon_code}                   || '',
               coupon_message      => $args{coupon_message}                || '',

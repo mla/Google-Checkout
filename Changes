@@ -22,3 +22,8 @@ Revision history for Google Checkout
 
 1.0.6   2007-06-04
         * Add support for parameterized URL tracking
+
+1.0.7   2007-06-05
+        * Handles notification with multiple anonymous addresses
+        * Writes merchant item IDs to XML
+        * Coupon code now accepts both true and false values

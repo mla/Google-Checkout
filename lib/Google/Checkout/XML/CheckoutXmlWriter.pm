@@ -91,6 +91,9 @@ sub new
                                     $currency_supported]);
         $self->add_element(name => Google::Checkout::XML::Constants::QUANTITY,
                            data =>$_->get_quantity(), close => 1);
+        $self->add_element(name => Google::Checkout::XML::Constants::MERCHANT_ITEM_ID,
+                           data => $_->get_merchant_item_id(), close => 1)
+          if defined $_->get_merchant_item_id();
 
         if ($_->get_private())
         {

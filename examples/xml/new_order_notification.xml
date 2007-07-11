@@ -60,6 +60,7 @@
       <gift-certificate-adjustment>
         <applied-amount currency="USD">90.00</applied-amount>
         <code>GiftCert012345</code>
+        <pin>123456</pin>
         <calculated-amount currency="USD">10.00</calculated-amount>
         <message>You used your Gift Certificate!</message>
       </gift-certificate-adjustment>

@@ -35,6 +35,8 @@ lib/Google/Checkout/General/TaxTable.pm
 lib/Google/Checkout/General/TaxTableAreas.pm
 lib/Google/Checkout/General/Util.pm
 lib/Google/Checkout/General/ParameterizedUrls.pm
+lib/Google/Checkout/General/DigitalContent.pm
+lib/Google/Checkout/General/GiftCertificate.pm
 lib/Google/Checkout/Notification/ChargeAmount.pm
 lib/Google/Checkout/Notification/ChargebackAmount.pm
 lib/Google/Checkout/Notification/NewOrder.pm

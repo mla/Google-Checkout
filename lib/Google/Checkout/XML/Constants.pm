@@ -201,10 +201,15 @@ use constant SHIPPING_RATE         => "shipping-rate";
 use constant SHIPPALBE             => "shippable";
 use constant VALID                 => "valid";
 
-use constant MERCHANT_CALCULATION_RESULTS => "merchant-calculation-results";
-use constant MERCHANT_CODE_RESULTS        => "merchant-code-results";
-use constant COUPON_RESULT                => "coupon-result";
-use constant GIFT_CERTIFICATE_RESULT      => "gift-certificate-result";
+use constant MERCHANT_CALCULATION_RESULTS  => "merchant-calculation-results";
+use constant MERCHANT_CODE_RESULTS         => "merchant-code-results";
+use constant COUPON_RESULT                 => "coupon-result";
+use constant GIFT_CERTIFICATE_RESULT       => "gift-certificate-result";
+use constant GIFT_CERTIFICATE_SUPPORT      => "gift-certificate-support";
+use constant GIFT_CERTIFICATE_ACCEPTED     => "gift-certificate-accepted";
+use constant GIFT_CERTIFICATE_NAME         => "gift-certificate-name";
+use constant GIFT_CERTIFICATE_PIN_REQUIRED => "gift-certificate-pin-required";
+use constant GIFT_CERTIFICATE_PIN          => "pin";
 
 #--
 #-- Different kinds of notification
@@ -233,5 +238,14 @@ use constant URL_PARAMETER      => "url-parameter";
 use constant TYPE               => "type";
 
 use constant PLATFORM_ID => "platform-id";
+
+#--
+#-- Digital content delivery
+#--
+use constant DIGITAL_CONTENT      => "digital-content";
+use constant EMAIL_DELIVERY       => "email-delivery";
+use constant DOWNLOAD_INSTRUCTION => "description";
+use constant DOWNLOAD_KEY         => "key";
+use constant DOWNLOAD_URL         => "url";
 
 1;

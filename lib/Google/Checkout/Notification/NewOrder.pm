@@ -114,6 +114,10 @@ certificate.
 
 Returns the gift certificate code.
 
+=item get_gift_certificate_pin
+
+Returns the gift certificate PIN.
+
 =item get_gift_certificate_message
 
 Returns the gift certificate message.
@@ -325,6 +329,16 @@ sub get_gift_certificate_code
            Google::Checkout::XML::Constants::GIFT_CERTIFICATE_CODE, 
            '');
 }
+sub get_gift_certificate_pin
+{
+  my ($self) = @_;
+
+  return $self->_get_gift_coupon_info(
+           0, 
+           Google::Checkout::XML::Constants::GIFT_CERTIFICATE_ADJUSTMENT,
+           Google::Checkout::XML::Constants::GIFT_CERTIFICATE_PIN,
+           '');
+}
 sub get_gift_certificate_message
 {
   my ($self) = @_;
@@ -499,16 +513,16 @@ sub get_items
 
 sub _get_gift_coupon_info
 {
-  my ($self, $content_meta) = @_;
+  my ($self, $content_meta, $name, $type, $default) = @_;
 
   my $r = $self->get_data->{Google::Checkout::XML::Constants::ORDER_ADJUSTMENT}
                          ->{Google::Checkout::XML::Constants::MERCHANT_CODES};
 
-  my $v = $r->{$_[0]}->{$_[1]};
+  my $v = $r->{$name}->{$type};
 
   $v = $v->{content} if $content_meta;
 
-  return $v || $_[2]; 
+  return $v || $default; 
 }
 
 1;

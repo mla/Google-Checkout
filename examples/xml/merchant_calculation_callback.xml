@@ -51,8 +51,8 @@
       <method name="UPS Ground" />
     </shipping>
     <merchant-code-strings>
-      <merchant-code-string code="GiftCert012345" />
-      <merchant-code-string code="FirstVisitCoupon" />
+      <merchant-code-string code="GiftCert012345" pin = "1234" />
+      <merchant-code-string code="FirstVisitCoupon" pin = "5678" />
     </merchant-code-strings>
   </calculate>
 </merchant-calculation-callback>

@@ -3,6 +3,7 @@ use strict;
 
 use Google::Checkout::General::GCO;
 use Google::Checkout::General::MerchantItem;
+use Google::Checkout::General::DigitalContent;
 use Google::Checkout::General::ShoppingCart;
 use Google::Checkout::XML::CheckoutXmlWriter;
 use Google::Checkout::General::MerchantCheckoutFlow;
@@ -47,6 +48,20 @@ my $item = Google::Checkout::General::MerchantItem->new(
            price       => 12.34,
            quantity    => 12,
            private     => "gold");
+
+#--
+#-- Digital content
+#--
+my $digital = Google::Checkout::General::DigitalContent->new(
+              name            => "Digital",
+              description     => "Requires key to download",
+              price           => 19.99,
+              quantity        => 1,
+              delivery_method => Google::Checkout::General::DigitalContent::KEY_URL_DELIVERY,
+              key             => 1234,
+              url             => 'http://download/url');
+
+$cart->add_item($digital);
 
 #--
 #-- We add the item to the cart

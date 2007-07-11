@@ -10,7 +10,8 @@ Google::Checkout::General::Util
                  compute_hmac_sha1 compute_base64
                  date_time_string make_xml_safe is_merchant_item
                  is_shipping_method is_tax_table format_tax_rate
-                 get_valid_carrier is_valid_buyer_info/;
+                 get_valid_carrier is_valid_buyer_info
+                 is_gift_certificate_object is_digital_content/;
 
 =head1 DESCRIPTION
 
@@ -95,7 +96,8 @@ our @ISA = qw/Exporter/;
 our @EXPORT_OK = qw/is_gco_error compute_hmac_sha1 compute_base64
                     date_time_string make_xml_safe is_merchant_item
                     is_shipping_method is_tax_table format_tax_rate
-                    get_valid_carrier is_valid_buyer_info/;
+                    get_valid_carrier is_valid_buyer_info
+                    is_gift_certificate_object is_digital_content/;
 
 use UNIVERSAL qw/isa/;
 
@@ -146,6 +148,20 @@ sub is_tax_table
   my ($obj) = @_;
 
   return is_object($obj, "Google::Checkout::General::TaxTable");
+}
+
+sub is_gift_certificate_object
+{
+  my ($obj) = @_;
+
+  return is_object($obj, "Google::Checkout::General::GiftCertificate");
+}
+
+sub is_digital_content
+{
+  my ($obj) = @_;
+
+  return is_object($obj, "Google::Checkout::General::DigitalContent");
 }
 
 sub is_object

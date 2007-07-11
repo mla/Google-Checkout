@@ -53,6 +53,7 @@ my $adjust_total  = $new_order->get_adjustment_total;
 my $gc_cal_amount = $new_order->get_gift_certificate_calculated_amount;
 my $gc_app_amount = $new_order->get_gift_certificate_applied_amount;
 my $gc_cer_code   = $new_order->get_gift_certificate_code;
+my $gc_cer_pin    = $new_order->get_gift_certificate_pin;
 my $gc_message    = $new_order->get_gift_certificate_message;
 my $cu_cal_amount = $new_order->get_coupon_calculated_amount;
 my $cu_app_amount = $new_order->get_coupon_applied_amount;
@@ -80,6 +81,7 @@ Adjustment total:                   $adjust_total
 Gift certificate calculated amount: $gc_cal_amount
 Gift certificate applied amount:    $gc_app_amount
 Gift certificate code:              $gc_cer_code
+Guft certificate PIN:               $gc_cer_pin
 Gift certificate message:           $gc_message
 Coupon calculated amount:           $cu_cal_amount
 Coupon applied amount:              $cu_app_amount

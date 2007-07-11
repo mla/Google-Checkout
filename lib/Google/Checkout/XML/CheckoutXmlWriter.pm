@@ -8,7 +8,11 @@ use strict;
 use warnings;
 
 use Google::Checkout::XML::Constants;
-use Google::Checkout::General::Util qw/make_xml_safe format_tax_rate/;
+use Google::Checkout::General::Util qw/make_xml_safe format_tax_rate 
+                                       is_gift_certificate_object
+				       is_digital_content/;
+
+use Google::Checkout::General::DigitalContent;
 
 use Google::Checkout::XML::Writer;
 our @ISA = qw/Google::Checkout::XML::Writer/;
@@ -113,6 +117,47 @@ sub new
         $self->add_element(name => Google::Checkout::XML::Constants::TAX_TABLE_SELECTOR,
                            data => $_->get_tax_table_selector(), close => 1)
           if $_->get_tax_table_selector();
+
+        #--
+        #-- Is this digital delivery?
+        #--
+        if (Google::Checkout::General::Util::is_digital_content($_)) 
+        {
+          my $delivery_method = $_->get_delivery_method();
+
+          my $email_delivery   = $delivery_method eq Google::Checkout::General::DigitalContent::EMAIL_DELIVERY;
+          my $key_url_delivery = $delivery_method eq Google::Checkout::General::DigitalContent::KEY_URL_DELIVERY;
+
+          $self->add_element(name => Google::Checkout::XML::Constants::DIGITAL_CONTENT)
+            if ($email_delivery || $key_url_delivery);
+
+          if ($email_delivery) 
+          {
+            $self->add_element(name => Google::Checkout::XML::Constants::EMAIL_DELIVERY,
+                               data => 'true', close => 1);
+          }
+          elsif ($key_url_delivery) 
+          {
+            if ($_->get_download_instruction())
+            {
+              $self->add_element(name => Google::Checkout::XML::Constants::DOWNLOAD_INSTRUCTION,
+                                 data => $_->get_download_instruction(), close => 1);
+            }
+            if ($_->get_key())
+            {
+              $self->add_element(name => Google::Checkout::XML::Constants::DOWNLOAD_KEY,
+                                 data => $_->get_key(), close => 1);
+            }
+            if ($_->get_url())
+            {
+              $self->add_element(name => Google::Checkout::XML::Constants::DOWNLOAD_URL,
+                                 data => $_->get_url(), close => 1);
+            }
+          }
+
+          $self->close_element()
+            if ($email_delivery || $key_url_delivery);
+        }
 
       $self->close_element();
     }
@@ -492,10 +537,32 @@ sub _add_merchant_calculations
                        data => $calculation->get_coupons, close => 1);
   }
 
-  if ($calculation->get_certificates)
+  my $gift_certificate = $calculation->get_certificates;
+
+  if (Util::is_gift_certificate_object($gift_certificate)) 
   {
+    $self->add_element(name => Google::Checkout::XML::Constants::GIFT_CERTIFICATE_SUPPORT);
+    $self->add_element(name => Google::Checkout::XML::Constants::GIFT_CERTIFICATE_ACCEPTED,
+                       data => $gift_certificate->get_accepted ? 'true' : 'false', close => 1);
+    if ($gift_certificate->get_name) 
+    {
+      $self->add_element(name => Google::Checkout::XML::Constants::GIFT_CERTIFICATE_NAME,
+                         data => $gift_certificate->get_name, close => 1);
+    }
+    if ($gift_certificate->get_pin) 
+    {
+      $self->add_element(name => Google::Checkout::XML::Constants::GIFT_CERTIFICATE_PIN_REQUIRED,
+                         data => 'true', close => 1);
+    }
+    $self->close_element();
+  }
+  else 
+  {
+    #--
+    #-- Old style
+    #--
     $self->add_element(name => Google::Checkout::XML::Constants::ACCEPT_GIFT_CERTIFICATES,
-                       data => $calculation->get_certificates, close => 1);
+                       data => $gift_certificate, close => 1);
   }
 
   $self->close_element();

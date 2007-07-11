@@ -58,6 +58,14 @@ Returns an array reference of shipping methods.
 
 Returns an array reference of merchant code strings.
 
+=item get_merchant_code_strings_with_pin
+
+Same as `get_merchant_code_strings' except this supports the 
+new gift certificate format where customers can enter a PIN as well.
+It returns the result in an array reference where each element is
+a hash reference with `code' being the code string and `pin' being
+the PIN # the customer entered during checkout.
+
 =item get_addresses
 
 Returns an array reference of addresses. Each element
@@ -137,6 +145,26 @@ sub get_merchant_code_strings
                               {Google::Checkout::XML::Constants::MERCHANT_CODE_STRING} || [];
 
   return [map values %$_, @$ref];
+}
+
+sub get_merchant_code_strings_with_pin
+{
+  my ($self) = @_;
+
+  my $ref  = $self->get_data->{Google::Checkout::XML::Constants::CALCULATE}->
+                              {Google::Checkout::XML::Constants::MERCHANT_CODE_STRINGS}->
+                              {Google::Checkout::XML::Constants::MERCHANT_CODE_STRING} || [];
+
+  #--
+  #-- a little clean up
+  #--
+  my @result = ();
+  for my $i (@$ref) {
+    push (@result, {code => defined $i->{code} ? $i->{code} : '', 
+                    pin  => defined $i->{pin}  ? $i->{pin}  : ''});
+  }
+
+  return \@result;
 }
 
 sub get_addresses

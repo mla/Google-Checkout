@@ -105,6 +105,14 @@ for (@$coupons_certificates)
 }
 
 #--
+#-- Print out each gift certification code and PINs
+#--
+my $gcs = $callback->get_merchant_code_strings_with_pin;
+for my $i (@$gcs) {
+  print "Gift certificate code: $i->{code}, PIN: $i->{pin}\n";
+}
+
+#--
 #-- Create a merchant calculation result object. 
 #-- All the coupon and certificate stuff are optional 
 #--

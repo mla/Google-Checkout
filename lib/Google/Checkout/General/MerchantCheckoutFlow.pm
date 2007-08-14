@@ -15,7 +15,7 @@ Google::Checkout::General::MerchantCheckoutFlow
                       shipping_method       => [$method],
                       edit_cart_url         => "http://edit/cart/url",
                       continue_shopping_url => "http://continue/shopping/url",
-                      buyer_phone           => "1-111-111-1111",
+                      buyer_phone           => "true",
                       tax_table             => [$table1, $table2],
                       merchant_calculation  => $merchant_calculation,
 		      analytics_data        => "SW5zZXJ0IDxhbmFseXRpY3MtZGF0YT4gdmFsdWUgaGVyZS4=");
@@ -88,11 +88,11 @@ Sets the continue shopping URL.
 
 =item get_buyer_phone
 
-Returns the buyer's phone number.
+Gets weather or not you are requesting the buyers phone number
 
-=item set_buyer_phone PHONE
+=item set_buyer_phone BOOLEAN
 
-Sets the buyer's phone number.
+Sets weather or not you need the buyers phone number
 
 =item get_merchant_calculation
 

@@ -3,7 +3,7 @@ MANIFEST
 Makefile.PL
 README
 conf/GCOSystemGlobal.conf
-lib/Google/Checkout/Command/AddMerchantOrderNumber.pm 
+lib/Google/Checkout/Command/AddMerchantOrderNumber.pm
 lib/Google/Checkout/Command/AddTrackingData.pm
 lib/Google/Checkout/Command/ArchiveOrder.pm
 lib/Google/Checkout/Command/AuthorizeOrder.pm
@@ -15,6 +15,7 @@ lib/Google/Checkout/Command/ProcessOrder.pm
 lib/Google/Checkout/Command/RefundOrder.pm
 lib/Google/Checkout/Command/SendBuyerMessage.pm
 lib/Google/Checkout/Command/UnarchiveOrder.pm
+lib/Google/Checkout/General/AddressFilters.pm
 lib/Google/Checkout/General/GCO.pm
 lib/Google/Checkout/General/ConfigReader.pm
 lib/Google/Checkout/General/Error.pm

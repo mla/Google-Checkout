@@ -22,7 +22,7 @@ Google::Checkout::General::ShippingRestrictions
 
 =head1 DESCRIPTION
 
-This module is used to define shipping restrictions which can then
+This module is used to define shipping address-filters or restrictions which can then
 be added as part of a shipping method.
 
 =over 4
@@ -34,7 +34,9 @@ ALLOWED_STATE, array reference of allowed states; ALLOWED_ZIP, array
 reference of allowed zip code; ALLOWED_COUNTRY_AREA, array reference
 of allowed country area; EXCLUDED_STATE, array reference of excluded
 states; EXCLUDED_ZIP, array reference of excluded zip codes, 
-EXCLUDED_COUNTRY_AREA, array reference of excluded country area. For
+EXCLUDED_COUNTRY_AREA, array reference of excluded country area. ALLOWED_ALLOW_US_PO_BOX,
+true or false to enable PO Box addresses. ALLOWED_WORLD_AREA true or false to enable international shipping.
+ALLOWED_POSTAL_AREA, array reference of allowed countries. For
 ALLOWED_ZIP and EXCLUDED_ZIP, it's possible to use the wildcard 
 operator (*) to specify a range of zip codes as in "94*" for all zip
 codes starting with "94".
@@ -89,6 +91,22 @@ of zip codes.
 Adds another excluded country area. Currently, the
 only supported country area is C<Google::Checkout::XML::Constants::FULL_50_STATES>.
 
+=item add_allowed_allow_us_po_box BOOLEAN
+
+Set weather or not US PO Box addresses are allowed
+
+=item get_allowed_allow_us_po_box
+
+Returns true, false, or undefined if this has not been set
+
+=item add_allowed_world_area BOOLEAN
+
+Enables international shipping by setting the world_area value
+
+=item get_allowed_world_area
+
+Returns true or undefined
+
 =back
 
 =cut
@@ -115,6 +133,16 @@ sub new
   #--
   #-- Allowed area
   #--
+  if($args{allowed_allow_us_po_box})
+  {
+    $self->{allowed_allow_us_po_box} = $args{allowed_allow_us_po_box} eq 'true' ? 'true' : 'false';
+  }
+
+  if(($args{allowed_world_area})&&($args{allowed_world_area} eq 'true'))
+  {
+    $self->{allowed_world_area} = 'true';
+  }
+
   if($args{allowed_state})
   {
     for (@{$args{allowed_state}})
@@ -164,6 +192,20 @@ sub new
   return bless $self => $class;
 }
 
+sub get_allowed_world_area
+{
+  my ($self) = @_;
+
+  return $self->{allowed_world_area}; 
+}
+
+sub get_allowed_allow_us_po_box
+{
+  my ($self) = @_;
+
+  return $self->{allowed_allow_us_po_box}; 
+}
+
 sub get_allowed_state        
 { 
   my ($self) = @_;
@@ -204,6 +246,24 @@ sub get_excluded_country_area
   my ($self) = @_;
 
   return $self->{excluded_country_area}; 
+}
+
+sub add_allowed_world_area
+{
+  my ($self, $data) = @_;
+
+  if ((defined $data)&&($data eq 'true')) {
+    $self->{allowed_world_area} = 'true';
+  } else {
+    $self->{allowed_world_area} = undef;
+  }
+}
+
+sub add_allowed_allow_us_po_box
+{
+  my ($self, $data) = @_;
+
+  $self->{allowed_allow_us_po_box} = ($data eq 'true' ? 'true' : 'false') if defined $data; 
 }
 
 sub add_allowed_state        

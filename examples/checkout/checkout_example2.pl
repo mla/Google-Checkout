@@ -129,10 +129,10 @@ my $merchant_calculation = Google::Checkout::General::MerchantCalculations->new(
 #-- our own calculation. The buyer's phone number is also added
 #--
 my $checkout_flow = Google::Checkout::General::MerchantCheckoutFlow->new(
-                    shipping_method       => [$flat_rate_shipping],
+                    shipping_method       => [$custom_shipping],
                     edit_cart_url         => "http://edit/cart/url",
                     continue_shopping_url => "http://continue/shopping/url",
-                    buyer_phone           => "1-111-111-1111",
+                    buyer_phone           => 'true',
                     tax_table             => [$tax_table1,$tax_table2],
                     merchant_calculation  => $merchant_calculation);
 

@@ -6,7 +6,7 @@ Google::Checkout::General::GCO
 
 =head1 VERSION
 
-Version 1.0.9
+Version 1.1.0
 
 =cut 
 
@@ -46,6 +46,8 @@ Version 1.0.9
   #-- Checkout a cart
   #--
   my $response = $gco->checkout($cart);
+    or
+  my ($response,$requestXML) = $gco->checkout_with_xml($cart);
 
   die $response if is_gco_error $response;
 
@@ -129,6 +131,12 @@ Sends the shopping cart (C<Google::Checkout::General::ShoppingCart> object) to
 Google Checkout. If DIAGNOSE is true, the cart will be sent
 as a diagnose request.
 
+=item checkout_with_xml CART, DIAGNOSE
+
+Sends the shopping cart (C<Google::Checkout::General::ShoppingCart> object) to 
+Google Checkout. If DIAGNOSE is true, the cart will be sent
+as a diagnose request.  This method returns both the result and the xml request that was sent to Google Checkout.
+
 =item raw_checkout XML, DIAGNOSE
 
 Treat XML as a shopping cart and attempt to checkout it. If
@@ -208,7 +216,7 @@ use Google::Checkout::General::Util qw/is_gco_error compute_hmac_sha1 compute_ba
 #--       the user can say "use GCO 2.0;' which will reject this
 #--       version of the library. 
 #--
-our $VERSION = "1.0.9";
+our $VERSION = "1.1.0";
 
 sub new 
 {
@@ -351,13 +359,25 @@ sub get_xml_and_signature
 #--
 #-- Sends a shopping cart to GCO for checkout
 #--
-sub checkout
+sub checkout_with_xml
 {
   my ($self, $cart, $diagnose) = @_;
 
   my $xml = Google::Checkout::XML::CheckoutXmlWriter->new(gco => $self, cart => $cart)->done;
 
-  return $self->raw_checkout($xml, $diagnose);
+  return (($self->raw_checkout($xml, $diagnose)),$xml);
+}
+
+#--
+#-- Same as above, but it doesn't return the XML for backwards compatibility
+#--
+sub checkout
+{
+  my ($self, $cart, $diagnose) = @_;
+
+  my ($result,$xml) = $self->checkout_with_xml($cart, $diagnose);
+
+  return $result
 }
 
 #--

@@ -42,8 +42,13 @@ sub add_element
 
   $args{data} = make_xml_safe($args{data}) if ($args{data});
 
-  $self->{_xml_writer}->startTag($args{name}, @{$args{attr}});
-  $self->{_xml_writer}->raw($args{data}) if defined $args{data};
+  if ((defined $args{data})||(! $args{close})) {
+    $self->{_xml_writer}->startTag($args{name}, @{$args{attr}});
+    $self->{_xml_writer}->raw($args{data}) if defined $args{data};
+  } else {
+    $self->{_xml_writer}->emptyTag($args{name}, @{$args{attr}});
+    return 1;
+  }
 
   if ($args{close})
   {

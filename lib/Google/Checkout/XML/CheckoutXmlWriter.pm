@@ -264,18 +264,65 @@ sub new
                          attr => [Google::Checkout::XML::Constants::ITEM_CURRENCY,
                                   $currency_supported]);
 
-      my $restriction = $shipping->get_restriction();
-      if ($restriction)
+      my $address_filters = $shipping->get_address_filters();
+      if ($address_filters)
       {
-        $self->add_element(name => Google::Checkout::XML::Constants::SHIPPING_RESTRICTIONS);
-     
-        my $as = $restriction->get_allowed_state();
-        my $az = $restriction->get_allowed_zip();
-        my $ac = $restriction->get_allowed_country_area();
+        my $as = $address_filters->get_allowed_state();
+        my $az = $address_filters->get_allowed_zip();
+        my $ac = $address_filters->get_allowed_country_area();
+        my $po = $address_filters->get_allowed_allow_us_po_box();
+        my $wa = $address_filters->get_allowed_world_area();
 
         my $has_allowed = (defined $as && @{$as}) ||
                           (defined $az && @{$az}) ||
-                          (defined $ac && @{$ac});
+                          (defined $ac && @{$ac}) ||
+                          (defined $po) ||
+                          (defined $wa);
+
+        my $es = $address_filters->get_excluded_state();
+        my $ez = $address_filters->get_excluded_zip();
+        my $ec = $address_filters->get_excluded_country_area();
+
+        my $has_excluded = (defined $es && @{$es}) ||
+                           (defined $ez && @{$ez}) ||
+                           (defined $ec && @{$ec});
+
+        $self->add_element(name => Google::Checkout::XML::Constants::ADDRESS_FILTERS)
+          if $has_allowed || $has_excluded;
+
+    	if (defined $po)
+    	{
+    	  $self->add_element(name => Google::Checkout::XML::Constants::ALLOW_US_PO_BOX,
+                             data => $po eq 'true' ? 'true' : 'false', close => 1);
+    	}
+
+        $self->add_element(name => Google::Checkout::XML::Constants::ALLOWED_AREA)
+          if $has_allowed;
+        $self->_handle_allow($as, $az, $ac, $wa);
+        $self->close_element() if $has_allowed;
+
+        $self->add_element(name => Google::Checkout::XML::Constants::EXCLUDED_AREA) 
+          if $has_excluded;
+        $self->_handle_exclude($es, $ez, $ec);
+        $self->close_element() if $has_excluded;
+
+        $self->close_element() if $has_allowed || $has_excluded; # ADDRESS_FILTERS
+
+      } #-- END if ($address_filters)
+
+      my $restriction = $shipping->get_restriction();
+      if ($restriction)
+      {
+        my $as = $restriction->get_allowed_state();
+        my $az = $restriction->get_allowed_zip();
+        my $ac = $restriction->get_allowed_country_area();
+        my $po = $restriction->get_allowed_allow_us_po_box();
+        my $wa = $restriction->get_allowed_world_area();
+
+        my $has_allowed = (defined $as && @{$as}) ||
+                          (defined $az && @{$az}) ||
+                          (defined $ac && @{$ac}) ||
+                          (defined $wa);
 
         my $es = $restriction->get_excluded_state();
         my $ez = $restriction->get_excluded_zip();
@@ -285,9 +332,17 @@ sub new
                            (defined $ez && @{$ez}) ||
                            (defined $ec && @{$ec});
 
+        $self->add_element(name => Google::Checkout::XML::Constants::SHIPPING_RESTRICTIONS) if $has_allowed || $has_excluded;
+
+        if (defined $po)
+        {
+          $self->add_element(name => Google::Checkout::XML::Constants::ALLOW_US_PO_BOX,
+                                     data => $po eq 'true' ? 'true' : 'false', close => 1);
+        }
+
         $self->add_element(name => Google::Checkout::XML::Constants::ALLOWED_AREA) 
           if $has_allowed;
-        $self->_handle_allow($as, $az, $ac);
+        $self->_handle_allow($as, $az, $ac, $wa);
         $self->close_element() if $has_allowed;
 
         $self->add_element(name => Google::Checkout::XML::Constants::EXCLUDED_AREA) 
@@ -295,14 +350,21 @@ sub new
         $self->_handle_exclude($es, $ez, $ec);
         $self->close_element() if $has_excluded;
 
-        $self->close_element();
+        $self->close_element() if $has_allowed || $has_excluded; # SHIPPING_RESTRICTIONS
 
       } #-- END if ($restriction)
 
       $self->close_element();
 
     } #-- END for
+
+    $self->close_element() if @{$shippings};
+
   }
+
+  $self->close_element(); # MERCHANT_CHECKOUT_FLOW
+  $self->close_element(); # CHECKOUT_FLOW
+  $self->close_element(); # CHECKOUT_ROOT
 
   return bless $self => $class;
 }
@@ -311,7 +373,13 @@ sub new
 
 sub _handle_allow
 {
-  my ($self, $as, $az, $ac) = @_;
+  my ($self, $as, $az, $ac, $wa) = @_;
+
+  if (defined $wa)
+  {
+      $self->add_element(name => Google::Checkout::XML::Constants::WORLD_AREA,
+                         data => undef, close => 1);
+  }
 
   if (defined $as)
   {
@@ -539,7 +607,7 @@ sub _add_merchant_calculations
 
   my $gift_certificate = $calculation->get_certificates;
 
-  if (Util::is_gift_certificate_object($gift_certificate)) 
+  if (Google::Checkout::General::Util::is_gift_certificate_object($gift_certificate)) 
   {
     $self->add_element(name => Google::Checkout::XML::Constants::GIFT_CERTIFICATE_SUPPORT);
     $self->add_element(name => Google::Checkout::XML::Constants::GIFT_CERTIFICATE_ACCEPTED,

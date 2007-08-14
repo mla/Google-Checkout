@@ -52,6 +52,7 @@ use constant SHIPPING_METHODS   => "shipping-methods";
 use constant FLAT_RATE_SHIPPING => "flat-rate-shipping";
 use constant PICKUP             => "pickup";
 
+use constant ADDRESS_FILTERS              => "address-filters";
 use constant SHIPPING_RESTRICTIONS        => "shipping-restrictions";
 use constant MERCHANT_CALCULATED_SHIPPING => "merchant-calculated-shipping";
 
@@ -63,6 +64,8 @@ use constant US_ZIP_AREA     => "us-zip-area";
 use constant US_ZIP_PATTERN  => "zip-pattern";
 use constant US_COUNTRY_AREA => "us-country-area";
 use constant COUNTRY_AREA    => "country-area";
+use constant WORLD_AREA      => "world-area";
+use constant ALLOW_US_PO_BOX => "allow-us-po-box";
 
 use constant CONTINENTAL_48 => "CONTINENTAL_48";
 use constant FULL_50_STATES => "FULL_50_STATES";

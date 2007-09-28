@@ -18,7 +18,8 @@ Google::Checkout::General::MerchantCheckoutFlow
                       buyer_phone           => "true",
                       tax_table             => [$table1, $table2],
                       merchant_calculation  => $merchant_calculation,
-		      analytics_data        => "SW5zZXJ0IDxhbmFseXRpY3MtZGF0YT4gdmFsdWUgaGVyZS4=");
+		                  analytics_data        => "SW5zZXJ0IDxhbmFseXRpY3MtZGF0YT4gdmFsdWUgaGVyZS4=",
+		                  parameterized_urls    => [$purl1, $purl2]);
 
   my $cart = Google::Checkout::General::ShoppingCart->new(
              expiration    => "+1 month",
@@ -50,7 +51,8 @@ SHIPPING_METHOD, an array reference of C<Google::Checkout::General::Shipping>
 or it's sub-class objects; TAX_TABLE, an array reference of 
 C<Google::Checkout::General::TaxTable> objects; EDIT_CART_URL, an edit cart URL; 
 CONTINUE_SHOPPING_URL, a continue shopping URL; BUYER_PHONE, the buyer's phone; 
-MERCHANT_CALCULATION, a C<Google::Checkout::General::MerchantCalculations> object.
+MERCHANT_CALCULATION, a C<Google::Checkout::General::MerchantCalculations> object;
+PARAMETERIZED_URLS, an array reference of C<Google::Checkout::General::ParameterizedUrl>
 
 =item get_shipping_method
 
@@ -126,6 +128,15 @@ Returns the platform ID
 
 Sets the platform ID
 
+=item get_parameterized_urls
+
+Return parameterized urls as array reference
+
+=item add_parameterized_url
+
+Adds another parameterized url. PARAMETERIZED_URL should be an object of 
+C<Google::Checkout::General::ParameterizedUrl>.
+
 =back
 
 =cut
@@ -149,7 +160,7 @@ Google::Checkout::General::MerchantCalculations
 use strict;
 use warnings;
 
-use Google::Checkout::General::Util qw/is_shipping_method is_tax_table/;
+use Google::Checkout::General::Util qw/is_shipping_method is_tax_table is_parameterized_url/;
 
 sub new 
 {
@@ -183,9 +194,16 @@ sub new
   $self->{analytics_data} = $args{analytics_data}
     if $args{analytics_data};
 
+  # DEPRECATED
   $self->{parameterized_url} = $args{parameterized_url}
     if $args{parameterized_url};
-
+    
+  if ($args{parameterized_urls})
+  {
+    push(@{$self->{parameterized_urls}}, $_) 
+      for grep is_parameterized_url($_), @{$args{parameterized_urls}};
+  }
+  
   $self->{platform_id} = $args{platform_id}
     if defined $args{platform_id};
 
@@ -294,6 +312,7 @@ sub set_analytics_data
   $self->{analytics_data} = $analytics_data if $analytics_data;
 }
 
+# DEPRECATED
 sub get_parameterized_url 
 {
   my ($self) = @_;
@@ -301,6 +320,7 @@ sub get_parameterized_url
   return $self->{parameterized_url};
 }
 
+# DEPRECATED
 sub set_parameterized_url 
 {
   my ($self, $purl) = @_;
@@ -320,6 +340,21 @@ sub set_platform_id
   my ($self, $platform_id) = @_;
 
   $self->{platform_id} = $platform_id if defined $platform_id;
+}
+
+sub get_parameterized_urls
+{
+  my ($self) = @_;
+  
+  return $self->{parameterized_urls};
+}
+
+sub add_parameterized_url
+{
+  my ($self, $parameterized_url) = @_;
+
+  push(@{$self->{parameterized_urls}}, $parameterized_url)
+    if is_parameterized_url $parameterized_url;
 }
 
 1;

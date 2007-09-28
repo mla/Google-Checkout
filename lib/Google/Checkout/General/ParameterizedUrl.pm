@@ -1,18 +1,18 @@
-package Google::Checkout::General::ParameterizedUrls;
+package Google::Checkout::General::ParameterizedUrl;
 
 =head1 NAME
 
-Google::Checkout::General::ParameterizedUrls (DEPRECATED)
+Google::Checkout::General::ParameterizedUrl
 
 =head1 SYNOPSIS
 
   use Google::Checkout::General::GCO;
   use Google::Checkout::General::ShoppingCart;
-  use Google::Checkout::General::ParameterizedUrls;
+  use Google::Checkout::General::ParameterizedUrl;
   use Google::Checkout::General::MerchantCheckoutFlow;
   use Google::Checkout::General::Util qw/is_gco_error/;
 
-  my $purls = Google::Checkout::General::ParameterizedUrls->new(
+  my $purls = Google::Checkout::General::ParameterizedUrl->new(
               url => 'http://www.yourcompany.com', #-- Must be properly URI escaped
               url_params => {key1 => 'value1', key2 => 'value2', key3 => 'value3'});
 
@@ -23,8 +23,8 @@ Google::Checkout::General::ParameterizedUrls (DEPRECATED)
                       buyer_phone           => "1-111-111-1111",
                       tax_table             => [$table1, $table2],
                       merchant_calculation  => $merchant_calculation,
-		      analytics_data        => "SW5zZXJ0IDxhbmFseXRpY3MtZGF0YT4gdmFsdWUgaGVyZS4=",
-                      parameterized_url     => $purls);
+		                  analytics_data        => "SW5zZXJ0IDxhbmFseXRpY3MtZGF0YT4gdmFsdWUgaGVyZS4=",
+                      parameterized_urls    => [$purl1, $purl2]);
 
   my $cart = Google::Checkout::General::ShoppingCart->new(
              expiration    => "+1 month",
@@ -46,8 +46,6 @@ Google::Checkout::General::ParameterizedUrls (DEPRECATED)
 =head1 DESCRIPTION
 
 This module is responsible for supporting parameterized tracking URL.
-Please use Google::Checkout::General::ParameterizedUrl instead.
-Refer to checkout_example5.pl for an example.
 
 =over 4
 
@@ -94,7 +92,7 @@ Google::Checkout::General::MerchantCheckoutFlow
 =cut
 
 #--
-#--   <parameterized-urls></parameterized-urls>
+#--   <parameterized-url></parameterized-url>
 #--
 
 use strict;

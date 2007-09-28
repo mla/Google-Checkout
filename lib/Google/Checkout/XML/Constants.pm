@@ -56,20 +56,24 @@ use constant ADDRESS_FILTERS              => "address-filters";
 use constant SHIPPING_RESTRICTIONS        => "shipping-restrictions";
 use constant MERCHANT_CALCULATED_SHIPPING => "merchant-calculated-shipping";
 
-use constant ALLOWED_AREA    => "allowed-areas";
-use constant EXCLUDED_AREA   => "excluded-areas";
-use constant US_STATE        => "us-state-area";
-use constant STATE           => "state";
-use constant US_ZIP_AREA     => "us-zip-area";
-use constant US_ZIP_PATTERN  => "zip-pattern";
-use constant US_COUNTRY_AREA => "us-country-area";
-use constant COUNTRY_AREA    => "country-area";
-use constant WORLD_AREA      => "world-area";
-use constant ALLOW_US_PO_BOX => "allow-us-po-box";
+use constant ALLOWED_AREA        => "allowed-areas";
+use constant EXCLUDED_AREA       => "excluded-areas";
+use constant US_STATE            => "us-state-area";
+use constant STATE               => "state";
+use constant US_ZIP_AREA         => "us-zip-area";
+use constant US_ZIP_PATTERN      => "zip-pattern";
+use constant US_COUNTRY_AREA     => "us-country-area";
+use constant COUNTRY_AREA        => "country-area";
+use constant WORLD_AREA          => "world-area";
+use constant ALLOW_US_PO_BOX     => "allow-us-po-box";
+use constant POSTAL_AREA         => "postal-area";
+use constant COUNTRY_CODE        => "country-code";
+use constant POSTAL_CODE_PATTERN => "postal-code-pattern";
 
 use constant CONTINENTAL_48 => "CONTINENTAL_48";
 use constant FULL_50_STATES => "FULL_50_STATES";
 use constant ALL_STATES     => "ALL";
+use constant EU_COUNTRIES   => "EU_COUNTRIES";
 
 use constant EDIT_CART_URL         => "edit-cart-url";
 use constant CONTINUE_SHOPPING_URL => "continue-shopping-url";

@@ -16,10 +16,10 @@ lib/Google/Checkout/Command/RefundOrder.pm
 lib/Google/Checkout/Command/SendBuyerMessage.pm
 lib/Google/Checkout/Command/UnarchiveOrder.pm
 lib/Google/Checkout/General/AddressFilters.pm
-lib/Google/Checkout/General/GCO.pm
 lib/Google/Checkout/General/ConfigReader.pm
 lib/Google/Checkout/General/Error.pm
 lib/Google/Checkout/General/FlatRateShipping.pm
+lib/Google/Checkout/General/GCO.pm
 lib/Google/Checkout/General/MerchantCalculatedShipping.pm
 lib/Google/Checkout/General/MerchantCalculationCallback.pm
 lib/Google/Checkout/General/MerchantCalculationResult.pm
@@ -35,6 +35,7 @@ lib/Google/Checkout/General/TaxRule.pm
 lib/Google/Checkout/General/TaxTable.pm
 lib/Google/Checkout/General/TaxTableAreas.pm
 lib/Google/Checkout/General/Util.pm
+lib/Google/Checkout/General/ParameterizedUrl.pm
 lib/Google/Checkout/General/ParameterizedUrls.pm
 lib/Google/Checkout/General/DigitalContent.pm
 lib/Google/Checkout/General/GiftCertificate.pm
@@ -55,6 +56,7 @@ examples/checkout/checkout_example1.pl
 examples/checkout/checkout_example2.pl
 examples/checkout/checkout_example3.pl
 examples/checkout/checkout_example4.pl
+examples/checkout/checkout_example5.pl
 examples/command/add_merchant_order_number_command_example.pl
 examples/command/add_tracking_data_command_example.pl
 examples/command/archive_order_command_example.pl

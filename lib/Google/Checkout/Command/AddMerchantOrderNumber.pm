@@ -7,10 +7,10 @@ Google::Checkout::Command::AddMerchantOrderNumber
 =head1 SYNOPSIS
 
   use Google::Checkout::General::GCO
-  use Google::Checkout::General::AddMerchantOrderNumber;
+  use Google::Checkout::Command::AddMerchantOrderNumber;
   use Google::Checkout::General::Util qw/is_gco_error/;
 
-  my $add_merchant_order = AddMerchantOrderNumber->new(
+  my $add_merchant_order = Google::Checkout::Command::AddMerchantOrderNumber->new(
                            order_number          => 156310171628413,
                            merchant_order_number => 12345);
   my $response = $gco->command($add_merchant_order, $run_diagnose);

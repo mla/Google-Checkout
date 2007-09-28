@@ -31,6 +31,7 @@ use Google::Checkout::Notification::NewOrder;
 use Google::Checkout::Notification::OrderStateChange;
 use Google::Checkout::Notification::RefundAmount;
 use Google::Checkout::Notification::RiskInformation;
+use Google::Checkout::General::Util qw/is_gco_error/;
 
 sub get_notification_object
 {
@@ -47,7 +48,7 @@ sub get_notification_object
   #--
   my $root_element = _get_root_element(\%args);
 
-  return Google::Checkout::General::Error->new(-1, "Invalid XML") unless $root_element;
+  return Google::Checkout::General::Error->new(-1, "Invalid XML") if is_gco_error($root_element);
 
   return _map_xml_to_notification_object($root_element, \%args);
 }

@@ -33,9 +33,10 @@ Constructor. Takes a hash as its argument with the following keys:
 ALLOWED_STATE, array reference of allowed states; ALLOWED_ZIP, array
 reference of allowed zip code; ALLOWED_COUNTRY_AREA, array reference
 of allowed country area; EXCLUDED_STATE, array reference of excluded
-states; EXCLUDED_ZIP, array reference of excluded zip codes, 
-EXCLUDED_COUNTRY_AREA, array reference of excluded country area. ALLOWED_ALLOW_US_PO_BOX,
-true or false to enable PO Box addresses. ALLOWED_WORLD_AREA true or false to enable international shipping.
+states; EXCLUDED_ZIP, array reference of excluded zip codes;
+EXCLUDED_COUNTRY_AREA, array reference of excluded country area;
+ALLOWED_ALLOW_US_PO_BOX, true or false to enable PO Box addresses;
+ALLOWED_WORLD_AREA true or false to enable international shipping;
 ALLOWED_POSTAL_AREA, array reference of allowed countries. For
 ALLOWED_ZIP and EXCLUDED_ZIP, it's possible to use the wildcard 
 operator (*) to specify a range of zip codes as in "94*" for all zip
@@ -88,8 +89,7 @@ of zip codes.
 
 =item add_excluded_country_area AREA
 
-Adds another excluded country area. Currently, the
-only supported country area is C<Google::Checkout::XML::Constants::FULL_50_STATES>.
+Adds another excluded country area.
 
 =item add_allowed_allow_us_po_box BOOLEAN
 
@@ -107,6 +107,14 @@ Enables international shipping by setting the world_area value
 
 Returns true or undefined
 
+=item get_allowed_postal_area
+
+Returns the allowed postal area (array reference).
+
+=item add_allowed_postal_area AREA
+
+Add a postal area
+
 =back
 
 =cut
@@ -114,6 +122,10 @@ Returns true or undefined
 =head1 COPYRIGHT
 
 Copyright 2006 Google. All rights reserved.
+
+=head1 SEE ALSO
+
+Google::Checkout::General::ShippingRestrictions
 
 =cut
 

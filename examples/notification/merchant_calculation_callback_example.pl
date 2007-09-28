@@ -141,3 +141,5 @@ my $mcr2 = Google::Checkout::General::MerchantCalculationResult->new(
 #-- enviroment since it outputs a text/xml header as well
 #--
 $gco->send_merchant_calculation([$mcr1, $mcr2]);
+
+print "\n\n";

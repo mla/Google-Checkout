@@ -10,7 +10,7 @@ use warnings;
 use Google::Checkout::XML::Constants;
 use Google::Checkout::General::Util qw/make_xml_safe format_tax_rate 
                                        is_gift_certificate_object
-				       is_digital_content/;
+				                               is_digital_content/;
 
 use Google::Checkout::General::DigitalContent;
 
@@ -204,25 +204,23 @@ sub new
                          data => $analytics_data, close => 1);
     }
 
+    # DEPRECATED
     my $parameterized_url = $checkout_flow->get_parameterized_url;
     if ($parameterized_url && $parameterized_url->get_url) {
       $self->add_element(name => Google::Checkout::XML::Constants::PARAMETERIZED_URLS);
-      $self->add_element(name => Google::Checkout::XML::Constants::PARAMETERIZED_URL,
-                         attr => [Google::Checkout::XML::Constants::URL, 
-                                  $parameterized_url->get_url]);
-      my $additional_params = $parameterized_url->get_url_params;
-      if ($additional_params && %{$additional_params}) {
-        $self->add_element(name => Google::Checkout::XML::Constants::PARAMETERS);
-        while (my ($name, $value) = each %{$additional_params}) {
-          $self->add_element(name => Google::Checkout::XML::Constants::URL_PARAMETER,
-                             attr => [Google::Checkout::XML::Constants::NAME, $name,
-                                      Google::Checkout::XML::Constants::TYPE, $value],
-                             close => 1);
-        }
-        $self->close_element();
+      $self->_add_parameterized_url($parameterized_url);
+      $self->close_element();  # Close <parameterized-urls>
+    }
+    
+    my $parameterized_urls = $checkout_flow->get_parameterized_urls;
+    if ($parameterized_urls && scalar(@{$parameterized_urls}) > 0)
+    {
+      $self->add_element(name => Google::Checkout::XML::Constants::PARAMETERIZED_URLS);
+      for (@{$parameterized_urls})
+      {
+        $self->_add_parameterized_url($_);
       }
-      $self->close_element();
-      $self->close_element();
+      $self->close_element();  # Close <parameterized-urls>
     }
 
     if (defined $checkout_flow->get_platform_id()) {
@@ -265,94 +263,10 @@ sub new
                                   $currency_supported]);
 
       my $address_filters = $shipping->get_address_filters();
-      if ($address_filters)
-      {
-        my $as = $address_filters->get_allowed_state();
-        my $az = $address_filters->get_allowed_zip();
-        my $ac = $address_filters->get_allowed_country_area();
-        my $po = $address_filters->get_allowed_allow_us_po_box();
-        my $wa = $address_filters->get_allowed_world_area();
-
-        my $has_allowed = (defined $as && @{$as}) ||
-                          (defined $az && @{$az}) ||
-                          (defined $ac && @{$ac}) ||
-                          (defined $po) ||
-                          (defined $wa);
-
-        my $es = $address_filters->get_excluded_state();
-        my $ez = $address_filters->get_excluded_zip();
-        my $ec = $address_filters->get_excluded_country_area();
-
-        my $has_excluded = (defined $es && @{$es}) ||
-                           (defined $ez && @{$ez}) ||
-                           (defined $ec && @{$ec});
-
-        $self->add_element(name => Google::Checkout::XML::Constants::ADDRESS_FILTERS)
-          if $has_allowed || $has_excluded;
-
-    	if (defined $po)
-    	{
-    	  $self->add_element(name => Google::Checkout::XML::Constants::ALLOW_US_PO_BOX,
-                             data => $po eq 'true' ? 'true' : 'false', close => 1);
-    	}
-
-        $self->add_element(name => Google::Checkout::XML::Constants::ALLOWED_AREA)
-          if $has_allowed;
-        $self->_handle_allow($as, $az, $ac, $wa);
-        $self->close_element() if $has_allowed;
-
-        $self->add_element(name => Google::Checkout::XML::Constants::EXCLUDED_AREA) 
-          if $has_excluded;
-        $self->_handle_exclude($es, $ez, $ec);
-        $self->close_element() if $has_excluded;
-
-        $self->close_element() if $has_allowed || $has_excluded; # ADDRESS_FILTERS
-
-      } #-- END if ($address_filters)
+      $self->_handle_restrictions_filters($address_filters, Google::Checkout::XML::Constants::ADDRESS_FILTERS);
 
       my $restriction = $shipping->get_restriction();
-      if ($restriction)
-      {
-        my $as = $restriction->get_allowed_state();
-        my $az = $restriction->get_allowed_zip();
-        my $ac = $restriction->get_allowed_country_area();
-        my $po = $restriction->get_allowed_allow_us_po_box();
-        my $wa = $restriction->get_allowed_world_area();
-
-        my $has_allowed = (defined $as && @{$as}) ||
-                          (defined $az && @{$az}) ||
-                          (defined $ac && @{$ac}) ||
-                          (defined $wa);
-
-        my $es = $restriction->get_excluded_state();
-        my $ez = $restriction->get_excluded_zip();
-        my $ec = $restriction->get_excluded_country_area();
-
-        my $has_excluded = (defined $es && @{$es}) ||
-                           (defined $ez && @{$ez}) ||
-                           (defined $ec && @{$ec});
-
-        $self->add_element(name => Google::Checkout::XML::Constants::SHIPPING_RESTRICTIONS) if $has_allowed || $has_excluded;
-
-        if (defined $po)
-        {
-          $self->add_element(name => Google::Checkout::XML::Constants::ALLOW_US_PO_BOX,
-                                     data => $po eq 'true' ? 'true' : 'false', close => 1);
-        }
-
-        $self->add_element(name => Google::Checkout::XML::Constants::ALLOWED_AREA) 
-          if $has_allowed;
-        $self->_handle_allow($as, $az, $ac, $wa);
-        $self->close_element() if $has_allowed;
-
-        $self->add_element(name => Google::Checkout::XML::Constants::EXCLUDED_AREA) 
-          if $has_excluded;
-        $self->_handle_exclude($es, $ez, $ec);
-        $self->close_element() if $has_excluded;
-
-        $self->close_element() if $has_allowed || $has_excluded; # SHIPPING_RESTRICTIONS
-
-      } #-- END if ($restriction)
+      $self->_handle_restrictions_filters($restriction, Google::Checkout::XML::Constants::SHIPPING_RESTRICTIONS);
 
       $self->close_element();
 
@@ -370,16 +284,61 @@ sub new
 }
 
 #-- PRIVATE --#
+sub _handle_restrictions_filters
+{
+  my ($self, $i, $type) = @_;
+  
+  if ($i)
+  {
+    my $as = $i->get_allowed_state();
+    my $az = $i->get_allowed_zip();
+    my $ac = $i->get_allowed_country_area();
+    my $au = $i->get_allowed_allow_us_po_box();
+    my $aw = $i->get_allowed_world_area();
+    my $ap = $i->get_allowed_postal_area();
+
+    my $has_allowed = (defined $as && @{$as}) ||
+                      (defined $az && @{$az}) ||
+                      (defined $ac && @{$ac}) ||
+                      (defined $aw) ||
+                      (defined $ap && @{$ap});
+
+    my $es = $i->get_excluded_state();
+    my $ez = $i->get_excluded_zip();
+    my $ec = $i->get_excluded_country_area();
+    my $ep = $i->get_excluded_postal_area();
+
+    my $has_excluded = (defined $es && @{$es}) ||
+                       (defined $ez && @{$ez}) ||
+                       (defined $ec && @{$ec}) ||
+                       (defined $ep && @{$ep});
+
+    $self->add_element(name => $type) 
+      if $has_allowed || $has_excluded || defined $au;
+
+    if (defined $au)
+    {
+      $self->add_element(name => Google::Checkout::XML::Constants::ALLOW_US_PO_BOX,
+                                 data => $au eq 'true' ? 'true' : 'false', close => 1);
+    }
+
+    $self->add_element(name => Google::Checkout::XML::Constants::ALLOWED_AREA) 
+      if $has_allowed;
+    $self->_handle_allow($as, $az, $ac, $aw, $ap);
+    $self->close_element() if $has_allowed;
+
+    $self->add_element(name => Google::Checkout::XML::Constants::EXCLUDED_AREA) 
+      if $has_excluded;
+    $self->_handle_exclude($es, $ez, $ec, $ep);
+    $self->close_element() if $has_excluded;
+
+    $self->close_element() if $has_allowed || $has_excluded || defined $au;
+  }
+}
 
 sub _handle_allow
 {
-  my ($self, $as, $az, $ac, $wa) = @_;
-
-  if (defined $wa)
-  {
-      $self->add_element(name => Google::Checkout::XML::Constants::WORLD_AREA,
-                         data => undef, close => 1);
-  }
+  my ($self, $as, $az, $ac, $aw, $ap) = @_;
 
   if (defined $as)
   {
@@ -401,11 +360,25 @@ sub _handle_allow
                          attr => [Google::Checkout::XML::Constants::COUNTRY_AREA, $_], close => 1);
     }
   }
+  
+  if (defined $aw)
+  {
+    $self->add_element(name => Google::Checkout::XML::Constants::WORLD_AREA,
+                       data => undef, close => 1);
+  }
+  
+  if (defined $ap)
+  {
+    for (@{$ap})
+    {
+      $self->_add_postal_area($_);
+    }
+  }
 }
 
 sub _handle_exclude
 {
-  my ($self, $es, $ez, $ec) = @_;
+  my ($self, $es, $ez, $ec, $ep) = @_;
 
   if (defined $es)
   {
@@ -426,6 +399,30 @@ sub _handle_exclude
       $self->add_element(name => Google::Checkout::XML::Constants::US_COUNTRY_AREA,
                          attr => [Google::Checkout::XML::Constants::COUNTRY_AREA, $_], close => 1);
     }
+  }
+  
+  if (defined $ep)
+  {
+    for (@{$ep})
+    {
+      $self->_add_postal_area($_);
+    }
+  }
+}
+
+sub _add_postal_area
+{
+  my ($self, $hash_ref) = @_;
+  
+  if (defined $hash_ref->{country_code}) {
+    $self->add_element(name => Google::Checkout::XML::Constants::POSTAL_AREA);
+    $self->add_element(name => Google::Checkout::XML::Constants::COUNTRY_CODE,
+                       data => $_->{country_code}, close => 1);
+    if (defined $hash_ref->{postal_code_pattern}) {
+      $self->add_element(name => Google::Checkout::XML::Constants::POSTAL_CODE_PATTERN,
+                         data => $hash_ref->{postal_code_pattern}, close => 1);
+    }
+    $self->close_element(); # POSTAL_AREA      
   }
 }
 
@@ -563,6 +560,20 @@ sub _write_tax_area
                            attr => [Google::Checkout::XML::Constants::COUNTRY_AREA, $c], close => 1);
       }
     }
+
+    if ($ar->get_world)
+    {
+      $self->add_element(name => Google::Checkout::XML::Constants::WORLD_AREA, close => 1);
+    }
+
+    my $postal = $ar->get_postal;
+    if ($postal)
+    {
+      for (@$postal)
+      {
+      	$self->_add_postal_area($_)
+      }
+    }
   } 
 
   $self->close_element();
@@ -635,6 +646,27 @@ sub _add_merchant_calculations
 
   $self->close_element();
 
+}
+
+sub _add_parameterized_url
+{
+  my ($self, $parameterized_url) = @_;
+  
+  $self->add_element(name => Google::Checkout::XML::Constants::PARAMETERIZED_URL,
+                     attr => [Google::Checkout::XML::Constants::URL, 
+                              $parameterized_url->get_url]);
+  my $additional_params = $parameterized_url->get_url_params;
+  if ($additional_params && %{$additional_params}) {
+    $self->add_element(name => Google::Checkout::XML::Constants::PARAMETERS);
+    while (my ($name, $value) = each %{$additional_params}) {
+      $self->add_element(name => Google::Checkout::XML::Constants::URL_PARAMETER,
+                         attr => [Google::Checkout::XML::Constants::NAME, $name,
+                                  Google::Checkout::XML::Constants::TYPE, $value],
+                         close => 1);
+    }
+    $self->close_element();  # Close <parameters>
+  }
+  $self->close_element();  # Close <parameterized-url>
 }
 
 1;

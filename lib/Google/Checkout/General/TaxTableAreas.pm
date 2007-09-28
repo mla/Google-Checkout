@@ -87,6 +87,26 @@ Returns the country area.
 Adds another country area. Currently, only 
 C<Google::Checkout::XML::Constants::FULL_50_STATES> is supported.
 
+=item get_country
+
+Returns the country area.
+
+=item add_postal POSTAL_AREA
+
+Adds another postal area.
+
+=item get_postal
+
+Returns the postal area.
+
+=item add_world BOOLEAN
+
+Adds world area.
+
+=item get_world
+
+Returns 
+
 =back
 
 =cut
@@ -120,6 +140,8 @@ sub new
   $translated{allowed_state}        = $args{state}   if $args{state};
   $translated{allowed_zip}          = $args{zip}     if $args{zip};
   $translated{allowed_country_area} = $args{country} if $args{country};
+  $translated{allowed_postal_area}  = $args{postal}  if $args{postal};
+  $translated{allowed_world_area}   = $args{world}   if $args{world};
 
   my $self = $class->SUPER::new(%translated);
 
@@ -147,6 +169,20 @@ sub get_country
   return $self->get_allowed_country_area; 
 }
 
+sub get_postal 
+{ 
+  my ($self) = @_;
+
+  return $self->get_allowed_postal_area; 
+}
+
+sub get_world 
+{ 
+  my ($self) = @_;
+
+  return $self->get_allowed_world_area; 
+}
+
 sub add_state   
 { 
   my ($self, $data) = @_;
@@ -166,6 +202,20 @@ sub add_country
   my ($self, $data) = @_;
 
   return $self->add_allowed_country_area($data);
+}
+
+sub add_postal
+{ 
+  my ($self, $data) = @_;
+
+  return $self->add_allowed_postal_area($data);
+}
+
+sub add_world
+{ 
+  my ($self, $data) = @_;
+
+  return $self->add_allowed_world_area($data);
 }
 
 1;

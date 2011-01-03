@@ -551,10 +551,8 @@ sub _get_url
   return $url if is_gco_error($url);
   return $mid if is_gco_error($mid);
 
-  if ($self->reader()) {
-    $url =~ s#/+$##;
-    $url .= '/' . $mid . '/' . $type;
-  }
+  $url =~ s#/+$##;
+  $url .= '/' . $mid . '/' . $type;
 
   $url .= '/diagnose' if $diagnose;
 

@@ -18,27 +18,31 @@ Version 1.1.1
   use Google::Checkout::General::Util qw/is_gco_error/;
 
   my $gco = Google::Checkout::General::GCO->new(
-            config_path => 'conf/GCOSystemGlobal.conf');
+    config_path => 'conf/GCOSystemGlobal.conf',
+  );
 
   #--
   #-- Or you can pass in the merchant id, key and Checkout URL like this
   #--
   $gco = Google::Checkout::General::GCO->new(
-         merchant_id  => 1234,
-         merchant_key => 'abcd',
-         gco_server   => 'https://sandbox.google.com/...');
+    merchant_id  => 1234,
+    merchant_key => 'abcd',
+    gco_server   => 'https://sandbox.google.com/checkout/cws/v2/Merchant',
+  );
 
   my $cart = Google::Checkout::General::ShoppingCart->new(
-             expiration    => "+1 month",
-             private       => "Merchant private data",
-             checkout_flow => $checkout_flow);
+    expiration    => "+1 month",
+    private       => "Merchant private data",
+    checkout_flow => $checkout_flow,
+  );
 
   my $item1 = Google::Checkout::General::MerchantItem->new(
-              name        => "Fish",
-              description => "A fish",
-              price       => 12.34,
-              quantity    => 12,
-              private     => "gold");
+    name        => "Fish",
+    description => "A fish",
+    price       => 12.34,
+    quantity    => 12,
+    private     => "gold",
+  );
 
   $cart->add_item($item1);
 
@@ -78,10 +82,9 @@ various commands and process notifications.
 
 =over 4
 
-=item new CONFIG_PATH => ..., MERCHANT_ID => ..., MERCHANT_KEY => ..., GCO_SERVER => ...
+=item new config_path => ..., merchant_id => ..., merchant_key => ..., gco_server => ...
 
-Constructor. Loads the configuration file from CONFIG_PATH. If no configuration
-file is specified, merchant id, key and Checkout server URL must be specified.
+Constructor. Loads the configuration file from I<config_path>. If no configuration file is specified, merchant id, key and checkout server URL must be specified.
 
 =item reader
 

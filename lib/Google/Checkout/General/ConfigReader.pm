@@ -53,7 +53,8 @@ sub new
 {
   my ($class, $args) = @_;
 
-  my $path = $args->{config_path} || "$ENV{GCO_ROOT}/conf/GCOSystemGlobal.conf";
+  my $root = $ENV{GCO_ROOT} || $args->{gco_root} || '';
+  my $path = $args->{config_path} || "$root/conf/GCOSystemGlobal.conf";
 
   return bless {config_path => $path,
                 opened      => 0,

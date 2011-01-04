@@ -54,6 +54,7 @@ Copyright 2006 Google. All rights reserved.
 use strict;
 use warnings;
 
+use Carp;
 use Google::Checkout::General::Error;
 use Google::Checkout::XML::Writer;
 use Google::Checkout::XML::Constants;
@@ -105,9 +106,13 @@ sub to_xml
 {
   my ($self, %args) = @_;
 
-  return Google::Checkout::General::Error->new(
-    @{$Google::Checkout::General::Error::ERRORS{MISSING_ORDER_NUMBER}}) 
-      unless $self->get_order_number;
+  $args{gco} or croak "no gco object supplied";
+
+  unless ($self->get_order_number) {
+    return Google::Checkout::General::Error->new(
+      @{$Google::Checkout::General::Error::ERRORS{MISSING_ORDER_NUMBER}}
+    ); 
+  }
 
   my $sstring = Google::Checkout::XML::Constants::XML_SCHEMA;
 

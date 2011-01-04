@@ -105,7 +105,7 @@ sub to_xml
 {
   my ($self, %args) = @_;
 
-  return Google::Checkout::General::Error(
+  return Google::Checkout::General::Error->new(
     @{$Google::Checkout::General::Error::ERRORS{MISSING_ORDER_NUMBER}}) 
       unless $self->get_order_number;
 
